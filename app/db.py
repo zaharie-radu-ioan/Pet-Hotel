@@ -41,16 +41,16 @@ def get_pool():
 @contextmanager
 def cursor(dictionary=False, commit=False):
     conn = get_pool().get_connection()
-    cur = conn.cursor(dictionary=dictionary)
+    c = conn.cursor(dictionary=dictionary)
     try:
-        yield cur
+        yield c
         if commit:
             conn.commit()
     except Exception:
         conn.rollback()
         raise
     finally:
-        cur.close()
+        c.close()
         conn.close()
 
 @contextmanager
