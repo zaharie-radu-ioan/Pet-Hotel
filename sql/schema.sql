@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS token_reinnoire;
 DROP TABLE IF EXISTS activitate;
 DROP TABLE IF EXISTS plata;
 DROP TABLE IF EXISTS cazare_serviciu;
@@ -19,6 +20,17 @@ CREATE TABLE IF NOT EXISTS utilizator (
     rol ENUM('admin', 'angajat', 'client') NOT NULL DEFAULT 'client',
     activ BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS token_reinnoire (
+    id_token      INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilizator INT NOT NULL,
+    hash_token    VARCHAR(64) NOT NULL UNIQUE,   -- sha256 în hex = 64 caractere
+    id_familie    VARCHAR(36) NOT NULL,          -- uuid4 = 36 caractere
+    revocat       BOOLEAN DEFAULT FALSE,
+    expira_la     TIMESTAMP NOT NULL,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_utilizator) REFERENCES utilizator(id_utilizator) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS angajat (
