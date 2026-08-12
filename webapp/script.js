@@ -8,9 +8,6 @@ const form =
 const successMessage =
   document.getElementById("successMessage");
 
-const loginLink =
-  document.getElementById("loginLink");
-
 
 /* =====================================================
    ERROR HANDLING
@@ -379,36 +376,3 @@ form
     );
 
   });
-
-
-/* =====================================================
-   LOGIN LINK
-===================================================== */
-
-loginLink.addEventListener(
-  "click",
-  event => {
-
-    event.preventDefault();
-
-
-    /*
-      Momentan este doar un placeholder.
-
-      Când creezi pagina de login,
-      poți folosi:
-
-      window.location.href = "login.html";
-
-      sau:
-
-      window.location.href = "/login";
-    */
-
-
-    alert(
-      "Connect this link to your login page."
-    );
-
-  }
-);
