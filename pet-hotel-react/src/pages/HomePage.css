@@ -1,0 +1,266 @@
+
+
+.home {
+  min-height: 100vh;
+  background: var(--green);
+  color: #ffffff;
+  font-family: "Poppins", Arial, sans-serif;
+}
+
+/* Dark button, used in nav / hero / location. */
+.home-btn {
+  display: inline-block;
+  padding: 13px 26px;
+  border-radius: 26px;
+  background: #0f1f14;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.home-btn:hover {
+  background: #16301f;
+  transform: translateY(-1px);
+}
+.home-btn--sm {
+  padding: 9px 20px;
+  font-size: 12px;
+}
+
+/* ---------- BRAND ---------- */
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 600;
+}
+.home-brand-mark {
+  font-size: 18px;
+}
+
+/* ---------- NAV ---------- */
+.home-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 48px;
+}
+.home-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.home-nav-links a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 13px;
+}
+.home-nav-links a:hover {
+  color: #ffffff;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  padding: 40px 48px 80px;
+}
+.hero-text h1 {
+  margin: 0 0 20px;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+.hero-text p {
+  margin: 0 0 32px;
+  max-width: 440px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.hero-image img {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  margin-left: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- FEATURES ---------- */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding: 20px 48px 80px;
+}
+.feature-card {
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.feature-card h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.feature-sub {
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+}
+.feature-card ul {
+  margin: 0 0 22px;
+  padding-left: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.feature-image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  /* Placeholder cald, ca in mockup. Se inlocuieste cu o <img> reala. */
+  background: linear-gradient(135deg, #e9c9a0, #d8b184);
+}
+
+/* ---------- LOCATION ---------- */
+.location {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  padding: 40px 48px 80px;
+}
+.location-text h2 {
+  margin: 0 0 18px;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.6px;
+}
+.location-text p {
+  margin: 0 0 12px;
+  max-width: 420px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.location-address {
+  font-weight: 600;
+}
+.location-text .home-btn {
+  margin-top: 16px;
+}
+.location-map {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
+}
+
+/* ---------- FOOTER ---------- */
+.home-footer {
+  display: grid;
+  grid-template-columns: 1.4fr 2fr auto;
+  gap: 40px;
+  padding: 44px 48px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.footer-brand p {
+  margin: 10px 0 0;
+  max-width: 220px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.footer-col h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.footer-col a {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 12px;
+}
+.footer-col a:hover {
+  color: #ffffff;
+}
+.footer-social {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 11px;
+}
+.footer-social a:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .hero,
+  .location {
+    grid-template-columns: 1fr;
+  }
+  .hero-image {
+    order: -1;
+  }
+  .hero-image img {
+    margin: 0 auto;
+  }
+  .features {
+    grid-template-columns: 1fr;
+  }
+  .home-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-nav,
+  .hero,
+  .features,
+  .location,
+  .home-footer {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+  .home-nav-links {
+    gap: 16px;
+  }
+  .home-nav-links a:not(.home-btn) {
+    display: none; /* pe telefon lasam doar Log in vizibil */
+  }
+}
