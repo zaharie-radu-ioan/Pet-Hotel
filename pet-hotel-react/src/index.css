@@ -1,0 +1,874 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+:root {
+  --green: #315d32;
+  --blue: #172bd0;
+  --navy: #132566;
+  --text: #111111;
+  --muted: #9a9a9a;
+  --line: #b3b3b3;
+  --white: #ffffff;
+  --error: #c73737;
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+
+  overflow-x: hidden;
+
+  background: #ffffff;
+  color: var(--text);
+
+  font-family:
+    "Poppins",
+    Arial,
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+
+/* =====================================================
+   FULL SCREEN LAYOUT
+===================================================== */
+
+.page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-columns: 50% 50%;
+}
+
+
+/* =====================================================
+   LEFT PANEL
+===================================================== */
+
+.left-panel {
+  position: relative;
+
+  min-height: 100vh;
+
+  background: #ffffff;
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.brand {
+  position: absolute;
+
+  top: 34px;
+  left: 32px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   FORM CONTAINER
+===================================================== */
+
+.form-container {
+  width: min(52%, 390px);
+  min-width: 320px;
+
+  margin: 0 auto;
+
+  padding-top: 13.5vh;
+}
+
+
+/* =====================================================
+   TITLE
+===================================================== */
+
+.form-container h1 {
+  margin: 0 0 16px;
+
+  font-size:
+    clamp(
+      27px,
+      2.1vw,
+      36px
+    );
+
+  line-height: 1.2;
+
+  font-weight: 600;
+
+  letter-spacing: -0.8px;
+}
+
+
+/* =====================================================
+   INTRO TEXT
+===================================================== */
+
+.intro {
+  margin: 0 0 27px;
+
+  font-size: 14px;
+
+  line-height: 1.75;
+}
+
+.intro a {
+  color: #102bc8;
+
+  font-weight: 600;
+
+  text-decoration: underline;
+}
+
+
+/* =====================================================
+   FORM FIELD
+===================================================== */
+
+.field {
+  margin-bottom: 17px;
+}
+
+
+/* LABEL */
+
+.field label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+
+  line-height: 1.2;
+}
+
+
+/* =====================================================
+   INPUT ROW
+===================================================== */
+
+.input-row {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  width: 100%;
+
+  height: 39px;
+
+  border-bottom:
+    1px solid var(--line);
+}
+
+
+/* First input has darker blue line */
+
+.field:first-of-type
+.input-row {
+  border-bottom:
+    2px solid #2737a1;
+}
+
+
+/* Focus */
+
+.input-row:focus-within {
+  border-bottom-color:
+    var(--navy);
+}
+
+
+/* =====================================================
+   INPUT ICON
+===================================================== */
+
+.icon {
+  width: 26px;
+
+  flex: 0 0 26px;
+
+  color: var(--navy);
+
+  font-size: 16px;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+.input-row input {
+  width: 100%;
+
+  height: 100%;
+
+  padding:
+    0 30px 0 4px;
+
+  border: 0;
+
+  outline: 0;
+
+  background:
+    transparent;
+
+  color: var(--navy);
+
+  font-family: inherit;
+
+  font-size: 13px;
+}
+
+
+/* Placeholder */
+
+.input-row input::placeholder {
+  color: var(--navy);
+
+  opacity: 1;
+}
+
+
+/* =====================================================
+   PASSWORD TOGGLE
+===================================================== */
+
+.password-toggle {
+  position: absolute;
+
+  right: 0;
+
+  top: 50%;
+
+  width: 24px;
+  height: 25px;
+
+  padding: 0;
+
+  border: 0;
+
+  background:
+    transparent;
+
+  color: #8d8d8d;
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transform:
+    translateY(-50%);
+}
+
+
+/* =====================================================
+   ERRORS
+===================================================== */
+
+.error {
+  display: block;
+
+  min-height: 0;
+
+  margin-top: 4px;
+
+  color: var(--error);
+
+  font-size: 9px;
+}
+
+
+/* Error state */
+
+.has-error
+.input-row {
+  border-bottom-color:
+    var(--error) !important;
+}
+
+
+/* =====================================================
+   REGISTER BUTTON
+===================================================== */
+
+.register-button {
+  width: 100%;
+
+  height: 49px;
+
+  margin-top: 38px;
+
+  border: 0;
+
+  border-radius: 28px;
+
+  background:
+    var(--blue);
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 9px 17px
+    rgba(0, 0, 0, 0.16);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+
+/* Hover */
+
+.register-button:hover {
+  background:
+    #1023bb;
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 11px 20px
+    rgba(0, 0, 0, 0.18);
+}
+
+
+/* Click */
+
+.register-button:active {
+  transform:
+    translateY(0);
+}
+
+
+/* =====================================================
+   SUCCESS MESSAGE
+===================================================== */
+
+.success-message {
+  min-height: 18px;
+
+  margin:
+    10px 0 0;
+
+  text-align: center;
+
+  color: #39733b;
+
+  font-size: 10px;
+}
+
+
+/* =====================================================
+   RIGHT GREEN PANEL
+===================================================== */
+
+.right-panel {
+  position: relative;
+
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  background:
+    var(--green);
+}
+
+
+/* =====================================================
+   PHONE NUMBER
+===================================================== */
+
+.phone {
+  position: absolute;
+
+  top: 35px;
+
+  right: 42px;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-size: 12px;
+
+  font-weight: 400;
+}
+
+
+/* =====================================================
+   HERO CONTENT
+===================================================== */
+
+.hero-content {
+  position: absolute;
+
+  width:
+    min(72%, 570px);
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -40%);
+}
+
+
+/* =====================================================
+   DOG IMAGE
+===================================================== */
+
+.dog-image {
+  display: block;
+
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  object-fit: cover;
+
+  border-radius: 7px;
+
+  margin-bottom: 42px;
+}
+
+
+/* =====================================================
+   HERO TITLE
+===================================================== */
+
+.hero-content h2 {
+  margin:
+    0 0 7px;
+
+  color: #ffffff;
+
+  font-size:
+    clamp(
+      30px,
+      3vw,
+      45px
+    );
+
+  line-height: 1.15;
+
+  font-weight: 600;
+
+  letter-spacing: -1px;
+}
+
+
+/* =====================================================
+   HERO DESCRIPTION
+===================================================== */
+
+.hero-content p {
+  margin: 0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.94
+    );
+
+  font-size:
+    clamp(
+      14px,
+      1.25vw,
+      18px
+    );
+
+  line-height: 1.65;
+}
+
+
+/* =====================================================
+   AUTOSCALE - LARGE SCREENS
+===================================================== */
+
+@media (min-width: 1600px) {
+
+  .form-container {
+    width:
+      min(52%, 460px);
+  }
+
+
+  .field {
+    margin-bottom: 22px;
+  }
+
+
+  .input-row {
+    height: 46px;
+  }
+
+
+  .register-button {
+    height: 57px;
+  }
+
+
+  .hero-content {
+    width:
+      min(70%, 680px);
+  }
+}
+
+
+/* =====================================================
+   AUTOSCALE - VERY LARGE SCREENS
+===================================================== */
+
+@media (min-width: 2200px) {
+
+  .form-container {
+    width:
+      min(52%, 560px);
+  }
+
+
+  .brand {
+    top: 45px;
+    left: 45px;
+
+    font-size: 20px;
+  }
+
+
+  .form-container h1 {
+    font-size: 44px;
+  }
+
+
+  .intro {
+    font-size: 17px;
+  }
+
+
+  .field label {
+    font-size: 14px;
+  }
+
+
+  .input-row input {
+    font-size: 16px;
+  }
+
+
+  .register-button {
+    font-size: 16px;
+  }
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
+  .page {
+    grid-template-columns:
+      48% 52%;
+  }
+
+
+  .form-container {
+    width: 70%;
+
+    min-width: 0;
+  }
+
+
+  .hero-content {
+    width: 78%;
+  }
+
+
+  .hero-content h2 {
+    font-size: 28px;
+  }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  body {
+    overflow-y: auto;
+  }
+
+
+  .page {
+    display: block;
+  }
+
+
+  /* LEFT */
+
+  .left-panel {
+    min-height: auto;
+
+    padding:
+      100px 25px 60px;
+  }
+
+
+  .brand {
+    top: 30px;
+    left: 25px;
+  }
+
+
+  .form-container {
+    width:
+      min(100%, 390px);
+
+    padding-top: 0;
+  }
+
+
+  /* RIGHT */
+
+  .right-panel {
+    min-height: 720px;
+  }
+
+
+  .phone {
+    top: 25px;
+    right: 25px;
+  }
+
+
+  .hero-content {
+    width:
+      min(86%, 430px);
+
+    top: 50%;
+
+    transform:
+      translate(
+        -50%,
+        -45%
+      );
+  }
+
+
+  .dog-image {
+    margin-bottom: 28px;
+  }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 430px) {
+
+  .left-panel {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+
+  .form-container h1 {
+    font-size: 28px;
+  }
+
+
+  .intro {
+    font-size: 12px;
+  }
+
+
+  .hero-content h2 {
+    font-size: 27px;
+  }
+
+
+  .hero-content p {
+    font-size: 13px;
+  }
+}
+
+/* =====================================================
+   REACT ADD-ONS (peste designul original)
+===================================================== */
+
+/* Mesaj de eroare la nivel de formular (401 login, erori API). */
+.form-error {
+  margin: 12px 0 0;
+  text-align: center;
+  color: var(--error);
+  font-size: 11px;
+}
+
+/* Ecranul scurt cat verificam sesiunea la pornire. */
+.route-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: var(--muted);
+  font-family: "Poppins", Arial, sans-serif;
+  font-size: 14px;
+}
+
+.register-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+  box-shadow: 0 9px 17px rgba(0, 0, 0, 0.16);
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+.dashboard {
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: "Poppins", Arial, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-header .brand {
+  position: static;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.link-button {
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.dashboard-body {
+  width: min(90%, 560px);
+  margin: 0 auto;
+  padding: 48px 0;
+}
+
+.dashboard-body h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+}
+
+.muted-text {
+  margin: 0 0 32px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.card {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.card h2 {
+  margin: 0 0 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.rezervare-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.date-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.date-label input {
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--navy);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.date-label input:focus {
+  outline: 0;
+  border-color: var(--navy);
+}
+
+.rezervare-form .register-button {
+  margin-top: 8px;
+}
