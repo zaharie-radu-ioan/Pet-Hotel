@@ -40,7 +40,7 @@ const FOOTER_COLUMNS = [
 ];
 
 export default function HomePage() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -92,7 +92,15 @@ export default function HomePage() {
             Book a comfortable stay for your companion - safe rooms, daily play,
             and people who treat them like family while you are away.
           </p>
-          <Link to="/signup" className="home-btn home-btn--dark">
+          <Link
+            to={user ? "/dashboard" : "/signup"}
+            className={`home-btn home-btn--dark${loading ? " is-disabled" : ""}`}
+            aria-disabled={loading}
+            tabIndex={loading ? -1 : undefined}
+            onClick={(e) => {
+            if (loading) e.preventDefault();
+            }}
+          >
             Book a stay
           </Link>
         </div>
