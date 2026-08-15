@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
+import AccountMenu from "../components/AccountMenu";
 import "./HomePage.css";
 
 const FEATURES = [
@@ -41,12 +42,6 @@ const FOOTER_COLUMNS = [
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
-  const navigate = useNavigate();
-
-  async function handleLogout() {
-    await logout();
-    navigate("/");
-  }
 
   return (
     <div className="home">
@@ -59,17 +54,7 @@ export default function HomePage() {
           <a href="#features">Overview</a>
           <a href="#location">Contact</a>
           {user ? (
-            <>
-              <Link to="/dashboard">Dashboard</Link>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="home-btn home-btn--dark home-btn--sm"
-                style={{ border: 0, cursor: "pointer", fontFamily: "inherit" }}
-              >
-                Log out
-              </button>
-            </>
+            <AccountMenu variant="dark" />
           ) : (
             <>
               <Link to="/signup">Sign up</Link>
@@ -93,7 +78,7 @@ export default function HomePage() {
             and people who treat them like family while you are away.
           </p>
           <Link
-            to={user ? "/dashboard" : "/signup"}
+            to={user ? "/rezervari" : "/signup"}
             className={`home-btn home-btn--dark${loading ? " is-disabled" : ""}`}
             aria-disabled={loading}
             tabIndex={loading ? -1 : undefined}
