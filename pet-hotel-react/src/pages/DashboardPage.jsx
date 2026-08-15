@@ -65,31 +65,20 @@ export default function DashboardPage() {
           {user?.id_utilizator}).
         </p>
 
-        <section className="card">
-          <h2>Rezervare noua</h2>
-          <form onSubmit={handleCreateRezervare} className="rezervare-form" noValidate>
-            <label className="date-label">
-              Check-in
-              <input type="date" value={dataInceput}
-                onChange={(e) => setDataInceput(e.target.value)} />
-            </label>
-            <label className="date-label">
-              Check-out
-              <input type="date" value={dataFinal}
-                onChange={(e) => setDataFinal(e.target.value)} />
-            </label>
-            <button className="register-button" type="submit" disabled={submitting}>
-              {submitting ? "Se trimite..." : "Cere rezervare"}
-            </button>
-          </form>
-
-          {error && <p className="form-error">{error}</p>}
-          {result && (
-            <p className="success-message">
-              Rezervare #{result.id_rezervare} creata - status: {result.status}.
-            </p>
-          )}
-        </section>
+        <div className="hub-grid">
+          <Link to="/rezervari" className="hub-card">
+            <h2>Rezervarile mele</h2>
+            <p>Cere o rezervare noua si vezi statusul celor existente.</p>
+          </Link>
+          <Link to="/animale" className="hub-card">
+            <h2>Customize your pet</h2>
+            <p>Vezi si personalizeaza animalele tale.</p>
+          </Link>
+          <Link to="/cont" className="hub-card">
+            <h2>Contul meu</h2>
+            <p>Vezi datele contului tau.</p>
+          </Link>
+        </div>
       </main>
     </div>
   );
