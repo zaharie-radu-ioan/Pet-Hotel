@@ -61,8 +61,7 @@ export default function DashboardPage() {
       <main className="dashboard-body">
         <h1>Bun venit</h1>
         <p className="muted-text">
-          Esti logat ca <strong>{user?.rol}</strong> (utilizator #
-          {user?.id_utilizator}).
+          Esti logat ca <strong>{user?.rol}</strong>
         </p>
 
         <section className="card">
@@ -86,7 +85,7 @@ export default function DashboardPage() {
           {error && <p className="form-error">{error}</p>}
           {result && (
             <p className="success-message">
-              Rezervare #{result.id_rezervare} creata - status: {result.status}.
+              Cererea ta a fost inregistrata - status: {result.status}.
             </p>
           )}
         </section>
