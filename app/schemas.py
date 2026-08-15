@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
-from datetime import date
+from datetime import date, datetime
+from decimal import Decimal
 
 class RegisterRequest(BaseModel):
     email: EmailStr
@@ -25,3 +26,26 @@ class UserPublic(BaseModel):
 class RezervareNoua(BaseModel):
     data_inceput: date
     data_final: date
+
+
+class RezervarePublic(BaseModel):
+    data_inceput: date
+    data_final: date
+    status: str
+    total: Decimal
+    created_at: datetime
+
+
+class ProfilPublic(BaseModel):
+    email: EmailStr
+    nume: str
+    prenume: str
+    telefon: str | None = None
+    adresa: str | None = None
+
+
+class ProfilUpdate(BaseModel):
+    nume: str = Field(min_length=1)
+    prenume: str = Field(min_length=1)
+    telefon: str | None = None
+    adresa: str | None = None
