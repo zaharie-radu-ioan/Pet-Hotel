@@ -18,4 +18,4 @@ def creeaza_rezervare(data: schemas.RezervareNoua, id_client: int = Depends(get_
         "INSERT INTO rezervare (data_inceput, data_final, id_client) VALUES (?, ?, ?)",
         (data.data_inceput, data.data_final, id_client),
     )
-    return {"id_rezervare": id_rezervare, "status": "ceruta"}
+    return {"status": "ceruta"}
