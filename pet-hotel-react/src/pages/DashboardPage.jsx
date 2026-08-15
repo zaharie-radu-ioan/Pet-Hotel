@@ -23,6 +23,13 @@ export default function DashboardPage() {
             <h2>Contul meu</h2>
             <p>Vezi datele contului tau.</p>
           </Link>
+<<<<<<< HEAD
+=======
+          <Link to="/animale" className="hub-card">
+            <h2>Animalele mele</h2>
+            <p>Vezi animalele asociate contului tau.</p>
+          </Link>
+>>>>>>> Alex
         </div>
       </main>
     </div>
