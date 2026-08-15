@@ -51,11 +51,7 @@ export default function HomePage() {
           Pet Hotel
         </Link>
         <nav className="home-nav-links">
-<<<<<<< HEAD
-          <a href="#features">Overview</a>
-=======
           <a href="/dashboard">Dashboard</a>
->>>>>>> Alex
           <a href="#location">Contact</a>
           {user ? (
             <AccountMenu variant="dark" />

@@ -6,11 +6,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BookingPage from "./pages/BookingPage";
 import AccountPage from "./pages/AccountPage";
-<<<<<<< HEAD
-
-=======
 import PetsPage from "./pages/PetsPage";
->>>>>>> Alex
 export default function App() {
   return (
     <Routes>
@@ -41,8 +37,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-<<<<<<< HEAD
-=======
       <Route
         path="/animale"
         element={
@@ -51,7 +45,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
->>>>>>> Alex
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
