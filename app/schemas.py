@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
-from datetime import date
+from datetime import date, datetime
+from decimal import Decimal
 
 class RegisterRequest(BaseModel):
     email: EmailStr
