@@ -40,7 +40,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login(email.trim(), password);
-      navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       setFormError(
         err instanceof ApiError ? err.message : "Ceva n-a mers. Incearca din nou."
