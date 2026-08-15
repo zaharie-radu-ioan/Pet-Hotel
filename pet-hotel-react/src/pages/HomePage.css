@@ -130,7 +130,7 @@
   aspect-ratio: 16 / 10;
   border-radius: 10px;
   border: 2px solid rgba(255, 255, 255, 0.5);
-  /* Placeholder cald, ca in mockup. Se inlocuieste cu o <img> reala. */
+  /* Se inlocuieste cu o <img> reala. */
   background: linear-gradient(135deg, #e9c9a0, #d8b184);
 }
 
@@ -261,6 +261,13 @@
     gap: 16px;
   }
   .home-nav-links a:not(.home-btn) {
-    display: none; /* pe telefon lasam doar Log in vizibil */
+    display: none;
   }
+}
+
+.home-btn.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: default;
+  box-shadow: none;
 }

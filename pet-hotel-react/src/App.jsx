@@ -6,7 +6,6 @@ import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BookingPage from "./pages/BookingPage";
 import AccountPage from "./pages/AccountPage";
-import PetsPage from "./pages/PetsPage";
 
 export default function App() {
   return (
@@ -35,14 +34,6 @@ export default function App() {
         element={
           <ProtectedRoute>
             <AccountPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/animale"
-        element={
-          <ProtectedRoute>
-           <PetsPage />
           </ProtectedRoute>
         }
       />

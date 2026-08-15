@@ -81,14 +81,6 @@ export default function AccountMenu({ variant = "light" }) {
           >
             Rezervarile mele
           </Link>
-          <Link
-            to="/animale"
-            role="menuitem"
-            className="account-item"
-            onClick={() => setOpen(false)}
-          >
-            Animalele mele
-          </Link>
           <div className="account-sep" />
           <button
             type="button"
