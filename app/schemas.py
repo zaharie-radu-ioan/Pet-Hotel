@@ -49,3 +49,26 @@ class ProfilUpdate(BaseModel):
     prenume: str = Field(min_length=1)
     telefon: str | None = None
     adresa: str | None = None
+
+
+class AnimalPublic(BaseModel):
+    id_animal: int
+    nume: str
+    specie: str
+    rasa: str | None = None
+    sex: str | None = None
+    data_nasterii: date | None = None
+    greutate: Decimal | None = None
+    sterilizat: bool
+    observatii: str | None = None
+
+
+class AnimalNou(BaseModel):
+    nume: str = Field(min_length=1, max_length=50)
+    specie: str = Field(min_length=1, max_length=50)
+    rasa: str | None = Field(default=None, max_length=100)
+    sex: str | None = None
+    data_nasterii: date | None = None
+    greutate: Decimal | None = None
+    sterilizat: bool = False
+    observatii: str | None = None
