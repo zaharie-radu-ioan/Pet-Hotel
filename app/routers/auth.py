@@ -5,10 +5,14 @@ import mariadb
 from fastapi import (
     APIRouter, Depends, HTTPException, Header, Request, Response, Cookie, status,
 )
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+# e adaugat pentru a merge call urile in swagger
 
 from app import security, config, schemas
 from app.db import run_select_one, run_execute, transaction
 from app.limiter import limiter
+
+bearer_scheme = HTTPBearer()
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -141,13 +145,35 @@ def logout(response: Response, refresh_token: str = Cookie(default=None)):
     response.delete_cookie(REFRESH_COOKIE, path="/auth")
     return {"detail": "Delogat"}
 
-def get_current_user(authorization: str = Header(default=None)):
-    if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Neautentificat")
-    payload = security.decode_access_token(authorization.split(" ", 1)[1])
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
+    if not credentials:
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            "Neautentificat"
+        )
+
+    payload = security.decode_access_token(credentials.credentials)
+
     if not payload:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Token invalid sau expirat")
-    return {"id_utilizator": int(payload["sub"]), "rol": payload["rol"]}
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            "Token invalid sau expirat"
+        )
+
+    return {
+        "id_utilizator": int(payload["sub"]),
+        "rol": payload["rol"]
+    }
+
+# de modificat aici forbidden message
+def get_current_employee(user=Depends(get_current_user)):
+    if user["rol"] != "angajat":
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN,
+            "Acces permis doar angajaților"
+        )
+    return user
 
 def get_current_client_id(user=Depends(get_current_user)):
     row = run_select_one(
@@ -162,3 +188,11 @@ def get_current_client_id(user=Depends(get_current_user)):
 @router.get("/me", response_model=schemas.UserPublic)
 def me(user=Depends(get_current_user)):
     return user
+
+# momentan
+@router.get("/employee-test")
+def employee_test(user=Depends(get_current_employee)):
+    return {
+        "message": "Acces angajat - ok",
+        "user": user
+    }

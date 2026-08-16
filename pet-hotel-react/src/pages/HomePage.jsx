@@ -105,7 +105,7 @@ export default function HomePage() {
                 <li key={p}>{p}</li>
               ))}
             </ul>
-            {/* Placeholder. Swap with <img className="feature-image" src="..." /> */}
+            
             <div className="feature-image" aria-hidden="true" />
           </article>
         ))}
