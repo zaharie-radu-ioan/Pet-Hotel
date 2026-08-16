@@ -140,11 +140,17 @@ CREATE TABLE IF NOT EXISTS activitate (
     ora_inceput DATETIME NOT NULL,
     ora_final DATETIME  CHECK (ora_final IS NULL OR ora_final >= ora_inceput),
     status ENUM('planificata', 'in_curs', 'finalizata', 'anulata') DEFAULT 'planificata',
+    creat_la TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    finalizat_la DATETIME NULL,
     observatii TEXT,
     id_cazare INT NOT NULL,
     FOREIGN KEY (id_cazare) REFERENCES cazare(id_cazare) ON DELETE CASCADE,
     id_angajat INT,
-    FOREIGN KEY (id_angajat) REFERENCES angajat(id_angajat) ON DELETE SET NULL
+    FOREIGN KEY (id_angajat) REFERENCES angajat(id_angajat) ON DELETE SET NULL,
+    id_creat_de INT,
+    FOREIGN KEY (id_creat_de)
+        REFERENCES utilizator(id_utilizator)
+        ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS plata (
