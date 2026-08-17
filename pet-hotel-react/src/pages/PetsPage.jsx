@@ -218,132 +218,7 @@ export default function PetsPage() {
 
               {showForm ? "Renunță" : "+ Adaugă animal"}
             </button>
-
-            {showForm && (
-              <div className="card" style={{ marginTop: "24px" }}>
-                <h2>Adaugă un animal</h2>
-
-                <form
-                  className="profil-edit"
-                  onSubmit={handleSubmit}
-                >
-                  <label className="field-label">
-                    Nume
-                    <input
-                      type="text"
-                      name="nume"
-                      value={form.nume}
-                      onChange={handleChange}
-                      required
-                    />
-                  </label>
-
-                  <label className="field-label">
-                    Specie
-                    <select
-                      name="specie"
-                      value={form.specie}
-                      onChange={handleChange}
-                      required
-                    >
-                      <option value="">Selectează specia</option>
-                      <option value="Caine">Câine</option>
-                       <option value="Pisica">Pisică</option>
-                       </select>
-                  </label>
-
-                  <label className="field-label">
-                    Rasă
-                    <input
-                      type="text"
-                      name="rasa"
-                      value={form.rasa}
-                      onChange={handleChange}
-                      placeholder="Ex. Labrador"
-                    />
-                  </label>
-
-                  <label className="field-label">
-                    Sex
-                    <select
-                      name="sex"
-                      value={form.sex}
-                      onChange={handleChange}
-                    >
-                      <option value="">Nespecificat</option>
-                      <option value="M">Mascul</option>
-                      <option value="F">Femelă</option>
-                    </select>
-                  </label>
-
-                  <label className="field-label">
-                    Data nașterii
-                    <input
-                      type="date"
-                      name="data_nasterii"
-                      value={form.data_nasterii}
-                      onChange={handleChange}
-                    />
-                  </label>
-
-                  <label className="field-label">
-                    Greutate (kg)
-                    <input
-                      type="number"
-                      name="greutate"
-                      value={form.greutate}
-                      onChange={handleChange}
-                      min="0.01"
-                      step="0.01"
-                    />
-                  </label>
-
-                  <label className="field-label">
-                    Observații
-                    <textarea
-                      name="observatii"
-                      value={form.observatii}
-                      onChange={handleChange}
-                      rows="4"
-                    />
-                  </label>
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="sterilizat"
-                      checked={form.sterilizat}
-                      onChange={handleChange}
-                    />
-                    {" "}Sterilizat
-                  </label>
-
-                  <div className="profil-actions">
-                    <button
-                      type="button"
-                      className="btn-ghost"
-                      onClick={() => {
-                        setShowForm(false);
-                        resetForm();
-                      }}
-                    >
-                      Anulează
-                    </button>
-
-                    <button
-                      type="submit"
-                      className="btn-primary"
-                      disabled={saving}
-                    >
-                      {saving ? "Se salvează..." :  editingAnimal
-                        ? "Salvează modificările"
-                        : "Adaugă animal"}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
-
+            
             {animals.length === 0 && !showForm && (
               <div className="card" style={{ marginTop: "24px" }}>
                 <h2>Nu ai animale adăugate</h2>
@@ -404,7 +279,136 @@ export default function PetsPage() {
           </>
         )}
       </main>
+      {showForm && (
+        <div className="modal-overlay">
+          <div className="modal-card pet-form-modal">
+            <h2>
+              {editingAnimal ? "Personalizează animalul" : "Adaugă un animal"}
+            </h2>
 
+            <form
+              className="profil-edit"
+              onSubmit={handleSubmit}
+            >
+              <label className="field-label">
+                Nume
+                <input
+                  type="text"
+                  name="nume"
+                  value={form.nume}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+
+              <label className="field-label">
+                Specie
+                <select
+                  name="specie"
+                  value={form.specie}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Selectează specia</option>
+                  <option value="Caine">Câine</option>
+                  <option value="Pisica">Pisică</option>
+                </select>
+              </label>
+
+              <label className="field-label">
+                Rasă
+                <input
+                  type="text"
+                  name="rasa"
+                  value={form.rasa}
+                  onChange={handleChange}
+                  placeholder="Ex. Labrador"
+                />
+              </label>
+
+              <label className="field-label">
+                Sex
+                <select
+                  name="sex"
+                  value={form.sex}
+                  onChange={handleChange}
+                >
+                  <option value="">Nespecificat</option>
+                  <option value="M">Mascul</option>
+                  <option value="F">Femelă</option>
+                </select>
+              </label>
+
+              <label className="field-label">
+                Data nașterii
+                <input
+                  type="date"
+                  name="data_nasterii"
+                  value={form.data_nasterii}
+                  onChange={handleChange}
+                />
+              </label>
+
+              <label className="field-label">
+                Greutate (kg)
+                <input
+                  type="number"
+                  name="greutate"
+                  value={form.greutate}
+                  onChange={handleChange}
+                  min="0.01"
+                  step="0.01"
+                />
+              </label>
+
+              <label className="field-label">
+                Observații
+                <textarea
+                  name="observatii"
+                  value={form.observatii}
+                  onChange={handleChange}
+                  rows="4"
+                />
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="sterilizat"
+                  checked={form.sterilizat}
+                  onChange={handleChange}
+                />
+                {" "}Sterilizat
+              </label>
+
+              <div className="profil-actions">
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => {
+                    setShowForm(false);
+                    resetForm();
+                  }}
+                >
+                  Anulează
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={saving}
+                >
+                  {saving
+                    ? "Se salvează..."
+                    : editingAnimal
+                      ? "Salvează modificările"
+                      : "Adaugă animal"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       {animalToDelete && (
           <div className="modal-overlay">
             <div className="modal-card">
