@@ -31,7 +31,9 @@ export default function App() {
         element={
           <ProtectedRoute>
             {user?.rol === "angajat" ? (
-              <EmployeeDashboard />
+              <RoleRoute allowedRoles={["angajat"]}>
+                <EmployeeDashboard />
+              </RoleRoute>
             ) : (
               <DashboardPage />
             )}
