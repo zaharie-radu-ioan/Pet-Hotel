@@ -9,7 +9,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 # e adaugat pentru a merge call urile in swagger
 
 from app import security, config, schemas
-from app.db import run_select_one, run_execute, transaction
+from app.db import run_select_one, run_execute, transaction, run_insert
 from app.limiter import limiter
 
 bearer_scheme = HTTPBearer()
@@ -172,6 +172,14 @@ def get_current_employee(user=Depends(get_current_user)):
         raise HTTPException(
             status.HTTP_403_FORBIDDEN,
             "Acces permis doar angajaților"
+        )
+    return user
+
+def get_current_admin(user=Depends(get_current_user)):
+    if user["rol"] != "admin":
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN,
+            "Acces permis doar adminilor"
         )
     return user
 

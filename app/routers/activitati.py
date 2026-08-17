@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.db import run_select, run_select_one, run_execute
-from app.routers.auth import get_current_employee
-from app.schemas import ActivitateResponse, ActivitateStatusUpdate
+from app.db import run_select, run_select_one, run_execute, run_insert
+from app.routers.auth import get_current_employee, get_current_admin
+from app.schemas import ActivitateResponse, ActivitateStatusUpdate, ActivitateCreate
 
 
 router = APIRouter(
@@ -161,4 +161,80 @@ def update_activity_status(
         "message": "Status activitate actualizat",
         "id_activitate": id_activitate,
         "status": data.status,
+    }
+
+@router.post("/", status_code=201)
+def create_activity(
+    data: ActivitateCreate,
+    current_user=Depends(get_current_admin),
+):
+    if data.ora_final is not None and data.ora_final < data.ora_inceput:
+        raise HTTPException(
+            status_code=400,
+            detail="Ora finala trebuie sa fie dupa ora de inceput.",
+        )
+
+    employee = run_select_one(
+        """
+        SELECT id_angajat
+        FROM angajat
+        WHERE id_angajat = ?
+        """,
+        (data.id_angajat,),
+        dictionary=True,
+    )
+
+    if not employee:
+        raise HTTPException(
+            status_code=404,
+            detail="Angajatul nu exista.",
+        )
+
+    cazare = run_select_one(
+        """
+        SELECT
+            id_cazare,
+            id_animal,
+            id_camera
+        FROM cazare
+        WHERE id_cazare = ?
+        """,
+        (data.id_cazare,),
+        dictionary=True,
+    )
+
+    if not cazare:
+        raise HTTPException(
+            status_code=404,
+            detail="Cazarea nu exista.",
+        )
+
+    id_activitate = run_insert(
+        """
+        INSERT INTO activitate (
+            tip_activitate,
+            ora_inceput,
+            ora_final,
+            status,
+            observatii,
+            id_cazare,
+            id_angajat,
+            id_creat_de
+        )
+        VALUES (?, ?, ?, 'planificata', ?, ?, ?, ?)
+        """,
+        (
+            data.tip_activitate,
+            data.ora_inceput,
+            data.ora_final,
+            data.observatii,
+            data.id_cazare,
+            data.id_angajat,
+            current_user["id_utilizator"],
+        ),
+    )
+
+    return {
+        "message": "Activitatea a fost creata si asignata.",
+        "id_activitate": id_activitate,
     }

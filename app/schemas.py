@@ -73,6 +73,14 @@ class ActivitateResponse(BaseModel):
 class ActivitateStatusUpdate(BaseModel):
     status: str
 
+class ActivitateCreate(BaseModel):
+    tip_activitate: str
+    ora_inceput: datetime
+    ora_final: datetime | None = None
+    observatii: str | None = None
+    id_cazare: int
+    id_angajat: int
+
 class AnimalPublic(BaseModel):
     id_animal: int
     nume: str
@@ -105,3 +113,4 @@ class AnimalUpdate(BaseModel):
     greutate: Decimal | None = None
     sterilizat: bool = False
     observatii: str | None = None
+
