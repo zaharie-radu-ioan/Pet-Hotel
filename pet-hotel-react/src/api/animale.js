@@ -17,3 +17,9 @@ export function updateAnimal(idAnimal, data) {
     body: JSON.stringify(data),
   });
 }
+
+export function deleteAnimal(idAnimal) {
+  return apiFetch(`/animale/${idAnimal}`, {
+    method: "DELETE",
+  });
+}

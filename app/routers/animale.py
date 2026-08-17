@@ -87,3 +87,15 @@ def modifica_animal(
         (id_animal, id_client),
         dictionary=True,
     )
+
+
+@router.delete("/{id_animal}", status_code=status.HTTP_204_NO_CONTENT)
+def sterge_animal(
+    id_animal: int,
+    id_client=Depends(get_current_client_id),
+):
+    run_execute(
+        "DELETE FROM animal "
+        "WHERE id_animal = ? AND id_client = ?",
+        (id_animal, id_client),
+    )

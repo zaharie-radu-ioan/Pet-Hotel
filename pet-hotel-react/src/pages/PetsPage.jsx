@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ApiError } from "../api/client";
-import { createAnimal, listAnimals, updateAnimal } from "../api/animale";
+import { createAnimal, listAnimals, updateAnimal, deleteAnimal } from "../api/animale";
 import AppHeader from "../components/AppHeader";
 
 export default function PetsPage() {
@@ -13,6 +13,9 @@ export default function PetsPage() {
   
   const [editingAnimal, setEditingAnimal] = useState(null);
 
+  const [animalToDelete, setAnimalToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  
   const [form, setForm] = useState({
     nume: "",
     specie: "",
@@ -124,6 +127,39 @@ export default function PetsPage() {
     }
   }
 
+  function handleDelete(animal) {
+  setAnimalToDelete(animal);
+  }
+
+  async function confirmDelete() {
+    if (!animalToDelete) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+      setError("");
+
+      await deleteAnimal(animalToDelete.id_animal);
+
+      setAnimals((current) =>
+        current.filter(
+          (animal) => animal.id_animal !== animalToDelete.id_animal
+        )
+      );
+
+      setAnimalToDelete(null);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError("Nu am putut șterge animalul.");
+      }
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   function handleCustomize(animal) {
     setEditingAnimal(animal);
 
@@ -139,7 +175,7 @@ export default function PetsPage() {
     });
 
   setShowForm(true);
-}
+  }
 
   return (
     <div className="dashboard">
@@ -354,6 +390,13 @@ export default function PetsPage() {
                     >
                       Customize
                     </button>
+                    <button
+                      type="button"
+                      className="btn-ghost"
+                      onClick={() => handleDelete(animal)}
+                    >
+                      Șterge
+                    </button>
                   </div>
                 ))}
               </div>
@@ -361,6 +404,39 @@ export default function PetsPage() {
           </>
         )}
       </main>
+
+      {animalToDelete && (
+          <div className="modal-overlay">
+            <div className="modal-card">
+              <h2>Ștergi animalul?</h2>
+
+              <p>
+                Ești sigur că vrei să ștergi animalul{" "}
+                <strong>{animalToDelete.nume}</strong>?
+              </p>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => setAnimalToDelete(null)}
+                  disabled={deleting}
+                >
+                  Nu
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-danger"
+                  onClick={confirmDelete}
+                  disabled={deleting}
+                >
+                  {deleting ? "Se șterge..." : "Da, șterge"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 }
