@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ApiError } from "../api/client";
-import { createAnimal, listAnimals } from "../api/animale";
+import { createAnimal, listAnimals, updateAnimal } from "../api/animale";
 import AppHeader from "../components/AppHeader";
 
 export default function PetsPage() {
@@ -10,6 +10,8 @@ export default function PetsPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  
+  const [editingAnimal, setEditingAnimal] = useState(null);
 
   const [form, setForm] = useState({
     nume: "",
@@ -53,6 +55,21 @@ export default function PetsPage() {
     }));
   }
 
+  function resetForm() {
+  setForm({
+    nume: "",
+    specie: "",
+    rasa: "",
+    sex: "",
+    data_nasterii: "",
+    greutate: "",
+    sterilizat: false,
+    observatii: "",
+  });
+
+  setEditingAnimal(null);
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -71,32 +88,58 @@ export default function PetsPage() {
         observatii: form.observatii || null,
       };
 
-      const newAnimal = await createAnimal(data);
+      if (editingAnimal) {
+        const updatedAnimal = await updateAnimal(
+          editingAnimal.id_animal,
+          data
+        );
 
-      setAnimals((current) => [...current, newAnimal]);
+        setAnimals((current) =>
+          current.map((animal) =>
+            animal.id_animal === updatedAnimal.id_animal
+              ? updatedAnimal
+              : animal
+          )
+        );
+      } else {
+        const newAnimal = await createAnimal(data);
 
-      setForm({
-        nume: "",
-        specie: "",
-        rasa: "",
-        sex: "",
-        data_nasterii: "",
-        greutate: "",
-        sterilizat: false,
-        observatii: "",
-      });
+        setAnimals((current) => [...current, newAnimal]);
+      }
 
+      resetForm();
       setShowForm(false);
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);
       } else {
-        setError("Nu am putut adăuga animalul.");
+        setError(
+          editingAnimal
+            ? "Nu am putut modifica animalul."
+            : "Nu am putut adăuga animalul."
+        );
       }
     } finally {
       setSaving(false);
     }
   }
+
+  function handleCustomize(animal) {
+    setEditingAnimal(animal);
+
+    setForm({
+      nume: animal.nume ?? "",
+      specie: animal.specie ?? "",
+      rasa: animal.rasa ?? "",
+      sex: animal.sex ?? "",
+      data_nasterii: animal.data_nasterii ?? "",
+      greutate: animal.greutate ?? "",
+      sterilizat: Boolean(animal.sterilizat),
+      observatii: animal.observatii ?? "",
+    });
+
+  setShowForm(true);
+}
 
   return (
     <div className="dashboard">
@@ -126,8 +169,17 @@ export default function PetsPage() {
             <button
               type="button"
               className="btn-primary"
-              onClick={() => setShowForm((current) => !current)}
+              onClick={() => {
+                if (showForm) {
+                  setShowForm(false);
+                 resetForm();
+                } else {
+                  resetForm();
+                  setShowForm(true);
+                }
+              }}
             >
+
               {showForm ? "Renunță" : "+ Adaugă animal"}
             </button>
 
@@ -161,7 +213,7 @@ export default function PetsPage() {
                       <option value="">Selectează specia</option>
                       <option value="Caine">Câine</option>
                        <option value="Pisica">Pisică</option>
-                     </select>
+                       </select>
                   </label>
 
                   <label className="field-label">
@@ -234,7 +286,10 @@ export default function PetsPage() {
                     <button
                       type="button"
                       className="btn-ghost"
-                      onClick={() => setShowForm(false)}
+                      onClick={() => {
+                        setShowForm(false);
+                        resetForm();
+                      }}
                     >
                       Anulează
                     </button>
@@ -244,7 +299,9 @@ export default function PetsPage() {
                       className="btn-primary"
                       disabled={saving}
                     >
-                      {saving ? "Se salvează..." : "Adaugă animal"}
+                      {saving ? "Se salvează..." :  editingAnimal
+                        ? "Salvează modificările"
+                        : "Adaugă animal"}
                     </button>
                   </div>
                 </form>
@@ -293,6 +350,7 @@ export default function PetsPage() {
                     <button
                       type="button"
                       className="btn-primary"
+                      onClick={() => handleCustomize(animal)}
                     >
                       Customize
                     </button>

@@ -72,3 +72,14 @@ class AnimalNou(BaseModel):
     greutate: Decimal | None = None
     sterilizat: bool = False
     observatii: str | None = None
+
+
+class AnimalUpdate(BaseModel):
+    nume: str = Field(min_length=1, max_length=50)
+    specie: str = Field(min_length=1, max_length=50)
+    rasa: str | None = Field(default=None, max_length=100)
+    sex: str | None = None
+    data_nasterii: date | None = None
+    greutate: Decimal | None = None
+    sterilizat: bool = False
+    observatii: str | None = None

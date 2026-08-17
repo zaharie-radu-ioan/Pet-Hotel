@@ -10,3 +10,10 @@ export function createAnimal(data){
         body: JSON.stringify(data),
     });
 }
+
+export function updateAnimal(idAnimal, data) {
+  return apiFetch(`/animale/${idAnimal}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
