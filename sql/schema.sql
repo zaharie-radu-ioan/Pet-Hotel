@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS problema (
 );
 
 CREATE TABLE IF NOT EXISTS camera (
-    id_camera INT AUTO_INCREMENT PRIMARY KEY,.
+    id_camera INT AUTO_INCREMENT PRIMARY KEY,
     cod VARCHAR(20) NOT NULL UNIQUE,
     tip_camera VARCHAR(50) NOT NULL,
     pret_noapte DECIMAL(10,2) NOT NULL CHECK (pret_noapte >= 0),
@@ -109,10 +109,13 @@ CREATE TABLE IF NOT EXISTS cazare (
     data_check_out DATETIME NOT NULL CHECK (data_check_out > data_check_in),
     pret_camera_noapte DECIMAL(10,2) NOT NULL CHECK (pret_camera_noapte >= 0),
     observatii TEXT,
+    nume_animal VARCHAR(50) NOT NULL,
+    specie_animal VARCHAR(50) NOT NULL,
+    rasa_animal VARCHAR(100),
     id_rezervare INT NOT NULL,
     FOREIGN KEY (id_rezervare) REFERENCES rezervare(id_rezervare) ON DELETE CASCADE,
-    id_animal INT NOT NULL,
-    FOREIGN KEY (id_animal) REFERENCES animal(id_animal) ON DELETE RESTRICT,
+    id_animal INT,
+    FOREIGN KEY (id_animal) REFERENCES animal(id_animal) ON DELETE SET NULL,
     id_camera INT NOT NULL,
     FOREIGN KEY (id_camera) REFERENCES camera(id_camera) ON DELETE RESTRICT,
     INDEX idx_cazare_camera_interval (id_camera, data_check_in, data_check_out),
