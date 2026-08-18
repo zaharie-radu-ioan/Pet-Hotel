@@ -6,61 +6,61 @@ import AppHeader from "../components/AppHeader";
 const dogBreeds = [
   "Labrador Retriever",
   "Golden Retriever",
-  "Ciobănesc German",
+  "German Shepherd",
   "Bulldog",
   "Beagle",
-  "Husky Siberian",
+  "Siberian Husky",
   "Rottweiler",
   "Chihuahua",
-  "Pudel",
+  "Poodle",
   "Cocker Spaniel",
   "Border Collie",
-  "Teckel",
+  "Dachshund",
   "Bichon",
-  "Alta",
+  "Other",
 ];
 
 const catBreeds = [
   "British Shorthair",
-  "Persană",
-  "Siameză",
+  "Persian",
+  "Siamese",
   "Maine Coon",
-  "Bengaleză",
+  "Bengal",
   "Ragdoll",
-  "Sfinx",
+  "Sphynx",
   "Scottish Fold",
-  "Angora Turcească",
-  "Albastru de Rusia",
-  "Norvegiană de Pădure",
-  "Alta",
+  "Turkish Angora",
+  "Russian Blue",
+  "Norwegian Forest Cat",
+  "Other",
 ];
 
 const breedImages = {
   "Labrador Retriever": "./pet-avatars/labrador-photo.jpg",
   "Golden Retriever": "./pet-avatars/golden-photo.jpg",
-  "Ciobănesc German": "./pet-avatars/german-shepherd-photo.jpg",
+  "German Shepherd": "./pet-avatars/german-shepherd-photo.jpg",
   "Bulldog": "./pet-avatars/bulldog-photo.jpg",
   "Beagle": "./pet-avatars/beagle-photo.jpg",
-  "Husky Siberian": "./pet-avatars/husky-photo.jpg",
+  "Siberian Husky": "./pet-avatars/husky-photo.jpg",
   "Rottweiler": "./pet-avatars/rottweiler-photo.jpg",
   "Chihuahua": "./pet-avatars/chihuahua-photo.jpg",
-  "Pudel": "./pet-avatars/poodle-photo.jpg",
+  "Poodle": "./pet-avatars/poodle-photo.jpg",
   "Cocker Spaniel": "./pet-avatars/cocker-photo.jpg",
   "Border Collie": "./pet-avatars/border-collie-photo.jpg",
-  "Teckel": "./pet-avatars/dachshund-photo.jpg",
+  "Dachshund": "./pet-avatars/dachshund-photo.jpg",
   "Bichon": "./pet-avatars/bichon-photo.jpg",
 
   "British Shorthair": "./pet-avatars/british-shorthair-photo.jpg",
-  "Persană": "./pet-avatars/persian-photo.jpg",
-  "Siameză": "./pet-avatars/siamese-photo.jpg",
+  "Persian": "./pet-avatars/persian-photo.jpg",
+  "Siamese": "./pet-avatars/siamese-photo.jpg",
   "Maine Coon": "./pet-avatars/maine-coon-photo.jpg",
-  "Bengaleză": "./pet-avatars/bengal-photo.jpg",
+  "Bengal": "./pet-avatars/bengal-photo.jpg",
   "Ragdoll": "./pet-avatars/ragdoll-photo.jpg",
-  "Sfinx": "./pet-avatars/sphynx-photo.jpg",
+  "Sphynx": "./pet-avatars/sphynx-photo.jpg",
   "Scottish Fold": "./pet-avatars/scottish-fold-photo.jpg",
-  "Angora Turcească": "./pet-avatars/turkish-angora-photo.jpg",
-  "Albastru de Rusia": "./pet-avatars/russian-blue-photo.jpg",
-  "Norvegiană de Pădure": "./pet-avatars/norwegian-forest-photo.jpg",
+  "Turkish Angora": "./pet-avatars/turkish-angora-photo.jpg",
+  "Russian Blue": "./pet-avatars/russian-blue-photo.jpg",
+  "Norwegian Forest Cat": "./pet-avatars/norwegian-forest-photo.jpg",
 };
 
 function getPetImage(animal) {
@@ -103,7 +103,7 @@ export default function PetsPage() {
         if (err instanceof ApiError) {
           setError(err.message);
         } else {
-          setError("Nu am putut încărca animalele.");
+          setError("We could not load the pets.");
         }
       } finally {
         setLoading(false);
@@ -186,8 +186,8 @@ export default function PetsPage() {
       } else {
         setError(
           editingAnimal
-            ? "Nu am putut modifica animalul."
-            : "Nu am putut adăuga animalul."
+            ? "We could not update the pet."
+            : "We could not add the pet."
         );
       }
     } finally {
@@ -221,7 +221,7 @@ export default function PetsPage() {
       if (err instanceof ApiError) {
         setError(err.message);
       } else {
-        setError("Nu am putut șterge animalul.");
+        setError("We could not delete the pet.");
       }
     } finally {
       setDeleting(false);
@@ -253,12 +253,12 @@ export default function PetsPage() {
         <h1>Customize your pet</h1>
 
         <p className="muted-text">
-          Selectează animalul pe care vrei să îl personalizezi.
+          Select the pet you want to customize.
         </p>
 
         {loading && (
           <p className="muted-text">
-            Se încarcă animalele...
+            Loading pets...
           </p>
         )}
 
@@ -284,15 +284,15 @@ export default function PetsPage() {
               }}
             >
 
-              {showForm ? "Renunță" : "+ Adaugă animal"}
+              {showForm ? "Cancel" : "+ Add Pet"}
             </button>
 
             {animals.length === 0 && !showForm && (
               <div className="card" style={{ marginTop: "24px" }}>
-                <h2>Nu ai animale adăugate</h2>
+                <h2>No pets added yet.</h2>
 
                 <p className="muted-text">
-                  Adaugă primul tău animal pentru a putea să îl personalizezi.
+                  Add your first pet to get started.
                 </p>
               </div>
             )}
@@ -324,14 +324,18 @@ export default function PetsPage() {
                       <h2>{animal.nume}</h2>
 
                       <p className="pet-card-breed">
-                        {animal.specie}
+                        {animal.specie === "Caine"
+                          ? "Dog"
+                          : animal.specie === "Pisica"
+                            ? "Cat"
+                            : animal.specie}
                         {animal.rasa ? ` • ${animal.rasa}` : ""}
                       </p>
 
                       <div className="pet-card-details">
                         {animal.sex && (
                           <span>
-                            {animal.sex === "M" ? "Mascul" : "Femelă"}
+                            {animal.sex === "M" ? "Male" : "Female"}
                           </span>
                         )}
 
@@ -356,7 +360,7 @@ export default function PetsPage() {
                           className="btn-ghost"
                           onClick={() => handleDelete(animal)}
                         >
-                          Șterge
+                          Delete
                         </button>
                       </div>
                     </div>
@@ -371,7 +375,7 @@ export default function PetsPage() {
         <div className="modal-overlay">
           <div className="modal-card pet-form-modal">
             <h2>
-              {editingAnimal ? "Personalizează animalul" : "Adaugă un animal"}
+              {editingAnimal ? "Customize pet" : "Add a pet"}
             </h2>
 
             <form
@@ -379,7 +383,7 @@ export default function PetsPage() {
               onSubmit={handleSubmit}
             >
               <label className="field-label">
-                Nume
+                Name
                 <input
                   type="text"
                   name="nume"
@@ -390,21 +394,21 @@ export default function PetsPage() {
               </label>
 
               <label className="field-label">
-                Specie
+                Species
                 <select
                   name="specie"
                   value={form.specie}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Selectează specia</option>
-                  <option value="Caine">Câine</option>
-                  <option value="Pisica">Pisică</option>
+                  <option value="">Select species</option>
+                  <option value="Caine">Dog</option>
+                  <option value="Pisica">Cat</option>
                 </select>
               </label>
 
               <label className="field-label">
-                Rasă
+                Breed
                 <select
                   name="rasa"
                   value={form.rasa}
@@ -413,8 +417,8 @@ export default function PetsPage() {
                 >
                   <option value="">
                     {form.specie
-                      ? "Selectează rasa"
-                      : "Selectează mai întâi specia"}
+                      ? "Select breed"
+                      : "Select species first"}
                   </option>
 
                   {(form.specie === "Caine"
@@ -437,14 +441,14 @@ export default function PetsPage() {
                   value={form.sex}
                   onChange={handleChange}
                 >
-                  <option value="">Nespecificat</option>
-                  <option value="M">Mascul</option>
-                  <option value="F">Femelă</option>
+                  <option value="">Not specified</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
                 </select>
               </label>
 
               <label className="field-label">
-                Data nașterii
+                Date of birth
                 <input
                   type="date"
                   name="data_nasterii"
@@ -454,19 +458,20 @@ export default function PetsPage() {
               </label>
 
               <label className="field-label">
-                Greutate (kg)
+                Weight (kg)
                 <input
                   type="number"
                   name="greutate"
                   value={form.greutate}
                   onChange={handleChange}
                   min="0.01"
+                  max="100"
                   step="0.01"
                 />
               </label>
 
               <label className="field-label">
-                Observații
+                Notes
                 <textarea
                   name="observatii"
                   value={form.observatii}
@@ -482,7 +487,7 @@ export default function PetsPage() {
                   checked={form.sterilizat}
                   onChange={handleChange}
                 />
-                {" "}Sterilizat
+                {" "}Neutered / Spayed
               </label>
 
               <div className="profil-actions">
@@ -494,7 +499,7 @@ export default function PetsPage() {
                     resetForm();
                   }}
                 >
-                  Anulează
+                  Cancel
                 </button>
 
                 <button
@@ -503,10 +508,10 @@ export default function PetsPage() {
                   disabled={saving}
                 >
                   {saving
-                    ? "Se salvează..."
+                    ? "Saving..."
                     : editingAnimal
-                      ? "Salvează modificările"
-                      : "Adaugă animal"}
+                      ? "Save changes"
+                      : "Add pet"}
                 </button>
               </div>
             </form>
@@ -516,10 +521,10 @@ export default function PetsPage() {
       {animalToDelete && (
           <div className="modal-overlay">
             <div className="modal-card">
-              <h2>Ștergi animalul?</h2>
+              <h2>Delete pet?</h2>
 
               <p>
-                Ești sigur că vrei să ștergi animalul{" "}
+                Are you sure you want to delete {" "}
                 <strong>{animalToDelete.nume}</strong>?
               </p>
 
@@ -530,7 +535,7 @@ export default function PetsPage() {
                   onClick={() => setAnimalToDelete(null)}
                   disabled={deleting}
                 >
-                  Nu
+                  No
                 </button>
 
                 <button
@@ -539,7 +544,7 @@ export default function PetsPage() {
                   onClick={confirmDelete}
                   disabled={deleting}
                 >
-                  {deleting ? "Se șterge..." : "Da, șterge"}
+                  {deleting ? "Deleting..." : "Yes, delete"}
                 </button>
               </div>
             </div>
