@@ -1,7 +1,43 @@
 import { useEffect, useState } from "react";
 import { ApiError } from "../api/client";
-import { createAnimal, listAnimals, updateAnimal, deleteAnimal } from "../api/animale";
+import {
+  createAnimal,
+  listAnimals,
+  updateAnimal,
+  deleteAnimal,
+} from "../api/animale";
 import AppHeader from "../components/AppHeader";
+
+const dogBreeds = [
+  "Labrador Retriever",
+  "Golden Retriever",
+  "German Shepherd",
+  "Bulldog",
+  "Beagle",
+  "Siberian Husky",
+  "Rottweiler",
+  "Chihuahua",
+  "Poodle",
+  "Cocker Spaniel",
+  "Border Collie",
+  "Dachshund",
+  "Other",
+];
+
+const catBreeds = [
+  "British Shorthair",
+  "Persian",
+  "Siamese",
+  "Maine Coon",
+  "Bengal",
+  "Ragdoll",
+  "Sphynx",
+  "Scottish Fold",
+  "Turkish Angora",
+  "Russian Blue",
+  "Norwegian Forest Cat",
+  "Other",
+];
 
 export default function PetsPage() {
   const [animals, setAnimals] = useState([]);
@@ -10,12 +46,12 @@ export default function PetsPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
-  
+
   const [editingAnimal, setEditingAnimal] = useState(null);
 
   const [animalToDelete, setAnimalToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
-  
+
   const [form, setForm] = useState({
     nume: "",
     specie: "",
@@ -55,22 +91,26 @@ export default function PetsPage() {
     setForm((current) => ({
       ...current,
       [name]: type === "checkbox" ? checked : value,
+
+      ...(name === "specie" && {
+        rasa: "",
+      }),
     }));
   }
 
   function resetForm() {
-  setForm({
-    nume: "",
-    specie: "",
-    rasa: "",
-    sex: "",
-    data_nasterii: "",
-    greutate: "",
-    sterilizat: false,
-    observatii: "",
-  });
+    setForm({
+      nume: "",
+      specie: "",
+      rasa: "",
+      sex: "",
+      data_nasterii: "",
+      greutate: "",
+      sterilizat: false,
+      observatii: "",
+    });
 
-  setEditingAnimal(null);
+    setEditingAnimal(null);
   }
 
   async function handleSubmit(event) {
@@ -128,7 +168,7 @@ export default function PetsPage() {
   }
 
   function handleDelete(animal) {
-  setAnimalToDelete(animal);
+    setAnimalToDelete(animal);
   }
 
   async function confirmDelete() {
@@ -174,7 +214,7 @@ export default function PetsPage() {
       observatii: animal.observatii ?? "",
     });
 
-  setShowForm(true);
+    setShowForm(true);
   }
 
   return (
@@ -208,19 +248,21 @@ export default function PetsPage() {
               onClick={() => {
                 if (showForm) {
                   setShowForm(false);
-                 resetForm();
+                  resetForm();
                 } else {
                   resetForm();
                   setShowForm(true);
                 }
               }}
             >
-
               {showForm ? "Cancel" : "+ Add pet"}
             </button>
 
             {animals.length === 0 && !showForm && (
-              <div className="card" style={{ marginTop: "24px" }}>
+              <div
+                className="card"
+                style={{ marginTop: "24px" }}
+              >
                 <h2>You have no pets yet</h2>
 
                 <p className="muted-text">
@@ -231,47 +273,60 @@ export default function PetsPage() {
 
             {animals.length > 0 && (
               <div
-                className="hub-grid"
+                className="pets-grid"
                 style={{ marginTop: "24px" }}
               >
                 {animals.map((animal) => (
                   <div
-                    className="hub-card"
+                    className="pet-card"
                     key={animal.id_animal}
                   >
-                    <h2>{animal.nume}</h2>
+                    <div className="pet-card-image">
+                      <span>
+                        {animal.specie === "Caine" ? "🐶" : "🐱"}
+                      </span>
+                    </div>
 
-                    <p>
-                      {animal.specie}
-                      {animal.rasa ? ` • ${animal.rasa}` : ""}
-                    </p>
+                    <div className="pet-card-content">
+                      <h2>{animal.nume}</h2>
 
-                    {animal.sex && (
-                      <p>
-                        Sex: {animal.sex}
+                      <p className="pet-card-breed">
+                        {animal.specie}
+                        {animal.rasa ? ` • ${animal.rasa}` : ""}
                       </p>
-                    )}
 
-                    {animal.greutate && (
-                      <p>
-                        Weight: {animal.greutate} kg
-                      </p>
-                    )}
+                      <div className="pet-card-details">
+                        {animal.sex && (
+                          <span>
+                            {animal.sex === "M" ? "Male" : "Female"}
+                          </span>
+                        )}
 
-                    <button
-                      type="button"
-                      className="btn-primary"
-                      onClick={() => handleCustomize(animal)}
-                    >
-                      Customize
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-ghost"
-                      onClick={() => handleDelete(animal)}
-                    >
-                      Delete
-                    </button>
+                        {animal.greutate && (
+                          <span>
+                            {animal.greutate} kg
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="pet-card-actions">
+                        <button
+                          type="button"
+                          className="btn-primary"
+                          onClick={() => handleCustomize(animal)}
+                        >
+                          Customize
+                        </button>
+
+                        <button
+                          type="button"
+                          className="btn-ghost"
+                          onClick={() => handleDelete(animal)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -279,6 +334,7 @@ export default function PetsPage() {
           </>
         )}
       </main>
+
       {showForm && (
         <div className="modal-overlay">
           <div className="modal-card pet-form-modal">
@@ -317,13 +373,29 @@ export default function PetsPage() {
 
               <label className="field-label">
                 Breed
-                <input
-                  type="text"
+                <select
                   name="rasa"
                   value={form.rasa}
                   onChange={handleChange}
-                  placeholder="Ex. Labrador"
-                />
+                  disabled={!form.specie}
+                >
+                  <option value="">
+                    {form.specie
+                      ? "Select a breed"
+                      : "Select a species first"}
+                  </option>
+
+                  {(form.specie === "Caine"
+                    ? dogBreeds
+                    : form.specie === "Pisica"
+                      ? catBreeds
+                      : []
+                  ).map((breed) => (
+                    <option key={breed} value={breed}>
+                      {breed}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="field-label">
@@ -409,38 +481,39 @@ export default function PetsPage() {
           </div>
         </div>
       )}
+
       {animalToDelete && (
-          <div className="modal-overlay">
-            <div className="modal-card">
-              <h2>Delete this pet?</h2>
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <h2>Delete this pet?</h2>
 
-              <p>
-                Are you sure you want to delete{" "}
-                <strong>{animalToDelete.nume}</strong>?
-              </p>
+            <p>
+              Are you sure you want to delete{" "}
+              <strong>{animalToDelete.nume}</strong>?
+            </p>
 
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="btn-ghost"
-                  onClick={() => setAnimalToDelete(null)}
-                  disabled={deleting}
-                >
-                  No
-                </button>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => setAnimalToDelete(null)}
+                disabled={deleting}
+              >
+                No
+              </button>
 
-                <button
-                  type="button"
-                  className="btn-danger"
-                  onClick={confirmDelete}
-                  disabled={deleting}
-                >
-                  {deleting ? "Deleting..." : "Yes, delete"}
-                </button>
-              </div>
+              <button
+                type="button"
+                className="btn-danger"
+                onClick={confirmDelete}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting..." : "Yes, delete"}
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
     </div>
   );
 }
