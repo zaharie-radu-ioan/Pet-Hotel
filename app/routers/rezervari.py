@@ -30,11 +30,11 @@ def load_stays(client_id):
     """Every stay of this client, with its room and its package."""
     stays = run_select(
         "SELECT z.id_cazare, z.id_rezervare, "
-        "       a.nume AS animal, c.tip_camera AS room_type, "
+        "       z.nume_animal AS animal, "
+        "       c.tip_camera AS room_type, "
         "       z.pret_camera_noapte AS room_price_per_night "
         "FROM cazare z "
         "JOIN rezervare r ON r.id_rezervare = z.id_rezervare "
-        "JOIN animal a ON a.id_animal = z.id_animal "
         "JOIN camera c ON c.id_camera = z.id_camera "
         "WHERE r.id_client = ? "
         "ORDER BY z.id_cazare",
@@ -209,10 +209,13 @@ def create_reservation(
         for stay in data.stays:
             # 1. The animal must belong to whoever is asking.
             cur.execute(
-                "SELECT nume FROM animal WHERE id_animal = ? AND id_client = ?",
+                "SELECT nume, specie, rasa "
+                "FROM animal "
+                "WHERE id_animal = ? AND id_client = ?",
                 (stay.animal_id, client_id),
             )
             animal = cur.fetchone()
+            
             if not animal:
                 raise HTTPException(
                     status.HTTP_404_NOT_FOUND, "One of the selected animals was not found."
@@ -259,14 +262,17 @@ def create_reservation(
             cur.execute(
                 "INSERT INTO cazare "
                 "(data_check_in, data_check_out, pret_camera_noapte, "
-                " id_rezervare, id_animal, id_camera) "
-                "VALUES (?, ?, ?, ?, ?, ?)",
+                " id_rezervare, id_animal, nume_animal, specie_animal, rasa_animal, id_camera) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     check_in,
                     check_out,
                     room["pret_noapte"],
                     reservation_id,
                     stay.animal_id,
+                    animal["nume"],
+                    animal["specie"],
+                    animal["rasa"],
                     room["id_camera"],
                 ),
             )
