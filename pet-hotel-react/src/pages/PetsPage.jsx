@@ -3,6 +3,37 @@ import { ApiError } from "../api/client";
 import { createAnimal, listAnimals, updateAnimal, deleteAnimal } from "../api/animale";
 import AppHeader from "../components/AppHeader";
 
+const dogBreeds = [
+  "Labrador Retriever",
+  "Golden Retriever",
+  "Ciobănesc German",
+  "Bulldog",
+  "Beagle",
+  "Husky Siberian",
+  "Rottweiler",
+  "Chihuahua",
+  "Pudel",
+  "Cocker Spaniel",
+  "Border Collie",
+  "Teckel",
+  "Alta",
+];
+
+const catBreeds = [
+  "British Shorthair",
+  "Persană",
+  "Siameză",
+  "Maine Coon",
+  "Bengaleză",
+  "Ragdoll",
+  "Sfinx",
+  "Scottish Fold",
+  "Angora Turcească",
+  "Albastru de Rusia",
+  "Norvegiană de Pădure",
+  "Alta",
+];
+
 export default function PetsPage() {
   const [animals, setAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +86,10 @@ export default function PetsPage() {
     setForm((current) => ({
       ...current,
       [name]: type === "checkbox" ? checked : value,
+
+      ...(name === "specie" && {
+        rasa: "",
+      }),
     }));
   }
 
@@ -231,47 +266,60 @@ export default function PetsPage() {
 
             {animals.length > 0 && (
               <div
-                className="hub-grid"
+                className="pets-grid"
                 style={{ marginTop: "24px" }}
               >
                 {animals.map((animal) => (
                   <div
-                    className="hub-card"
+                    className="pet-card"
                     key={animal.id_animal}
                   >
-                    <h2>{animal.nume}</h2>
+                    <div className="pet-card-image">
+                      <span>
+                        {animal.specie === "Caine" ? "🐶" : "🐱"}
+                      </span>
+                    </div>
 
-                    <p>
-                      {animal.specie}
-                      {animal.rasa ? ` • ${animal.rasa}` : ""}
-                    </p>
+                    <div className="pet-card-content">
+                      <h2>{animal.nume}</h2>
 
-                    {animal.sex && (
-                      <p>
-                        Sex: {animal.sex}
+                      <p className="pet-card-breed">
+                        {animal.specie}
+                        {animal.rasa ? ` • ${animal.rasa}` : ""}
                       </p>
-                    )}
 
-                    {animal.greutate && (
-                      <p>
-                        Greutate: {animal.greutate} kg
-                      </p>
-                    )}
+                      <div className="pet-card-details">
+                        {animal.sex && (
+                          <span>
+                            {animal.sex === "M" ? "Mascul" : "Femelă"}
+                          </span>
+                        )}
 
-                    <button
-                      type="button"
-                      className="btn-primary"
-                      onClick={() => handleCustomize(animal)}
-                    >
-                      Customize
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-ghost"
-                      onClick={() => handleDelete(animal)}
-                    >
-                      Șterge
-                    </button>
+                        {animal.greutate && (
+                          <span>
+                            {animal.greutate} kg
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="pet-card-actions">
+                        <button
+                          type="button"
+                          className="btn-primary"
+                          onClick={() => handleCustomize(animal)}
+                        >
+                          Customize
+                        </button>
+
+                        <button
+                          type="button"
+                          className="btn-ghost"
+                          onClick={() => handleDelete(animal)}
+                        >
+                          Șterge
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -317,13 +365,29 @@ export default function PetsPage() {
 
               <label className="field-label">
                 Rasă
-                <input
-                  type="text"
+                <select
                   name="rasa"
                   value={form.rasa}
                   onChange={handleChange}
-                  placeholder="Ex. Labrador"
-                />
+                  disabled={!form.specie}
+                >
+                  <option value="">
+                    {form.specie
+                      ? "Selectează rasa"
+                      : "Selectează mai întâi specia"}
+                  </option>
+
+                  {(form.specie === "Caine"
+                    ? dogBreeds
+                    : form.specie === "Pisica"
+                      ? catBreeds
+                      : []
+                  ).map((breed) => (
+                    <option key={breed} value={breed}>
+                      {breed}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="field-label">
