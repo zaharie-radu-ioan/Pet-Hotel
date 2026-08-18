@@ -1,4 +1,3 @@
-
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 let accessToken = null;
@@ -30,7 +29,7 @@ async function refreshAccessToken() {
 
   if (!res.ok) {
     accessToken = null;
-    throw new ApiError(res.status, "Sesiune expirata");
+    throw new ApiError(res.status, "Your session has expired.");
   }
 
   const data = await res.json();
@@ -89,8 +88,27 @@ export async function apiFetch(path, options = {}, _retry = false) {
   }
 
   const payload = await parseBody(res).catch(() => null);
-  const message = payload?.detail ?? `Eroare ${res.status}`;
-  throw new ApiError(res.status, message, payload);
+  throw new ApiError(res.status, errorMessage(payload, res.status), payload);
+}
+
+// FastAPI sends "detail" as a string for our own HTTPExceptions, but as a list
+// of { loc, msg, type } objects when the request body fails validation (422).
+// Without this, that list gets stringified into "[object Object]".
+function errorMessage(payload, status) {
+  const detail = payload?.detail;
+
+  if (typeof detail === "string") {
+    return detail;
+  }
+  if (Array.isArray(detail)) {
+    const messages = detail
+      .map((item) => item?.msg)
+      .filter(Boolean);
+    if (messages.length > 0) {
+      return messages.join(". ");
+    }
+  }
+  return `Request failed (${status}).`;
 }
 
 async function parseBody(res) {

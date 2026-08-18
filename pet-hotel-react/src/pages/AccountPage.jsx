@@ -18,7 +18,7 @@ export default function AccountPage() {
       try {
         setProfil(await getProfil());
       } catch {
-        setError("Nu am putut incarca datele contului.");
+        setError("We could not load your account details.");
       } finally {
         setLoading(false);
       }
@@ -45,7 +45,7 @@ export default function AccountPage() {
     setFormError("");
 
     if (!form.nume.trim() || !form.prenume.trim()) {
-      setFormError("Numele si prenumele sunt obligatorii.");
+      setFormError("First name and last name are required.");
       return;
     }
 
@@ -61,7 +61,7 @@ export default function AccountPage() {
       setEditing(false);
     } catch (err) {
       setFormError(
-        err instanceof ApiError ? err.message : "Nu am putut salva modificarile."
+        err instanceof ApiError ? err.message : "We could not save your changes."
       );
     } finally {
       setSaving(false);
@@ -72,39 +72,39 @@ export default function AccountPage() {
     <div className="dashboard">
       <AppHeader />
       <main className="dashboard-body">
-        <h1>Contul meu</h1>
-        <p className="muted-text">Datele contului tau.</p>
+        <h1>My account</h1>
+        <p className="muted-text">The details of your account.</p>
 
         <section className="card">
           {loading ? (
-            <p className="muted-text">Se incarca...</p>
+            <p className="muted-text">Loading...</p>
           ) : error ? (
             <p className="form-error">{error}</p>
           ) : editing ? (
             <form onSubmit={handleSave} className="profil-edit" noValidate>
               <label className="field-label">
-                Nume
+                Last name
                 <input
                   value={form.nume}
                   onChange={(e) => updateField("nume", e.target.value)}
                 />
               </label>
               <label className="field-label">
-                Prenume
+                First name
                 <input
                   value={form.prenume}
                   onChange={(e) => updateField("prenume", e.target.value)}
                 />
               </label>
               <label className="field-label">
-                Telefon
+                Phone
                 <input
                   value={form.telefon}
                   onChange={(e) => updateField("telefon", e.target.value)}
                 />
               </label>
               <label className="field-label">
-                Adresa
+                Address
                 <input
                   value={form.adresa}
                   onChange={(e) => updateField("adresa", e.target.value)}
@@ -120,10 +120,10 @@ export default function AccountPage() {
                   onClick={() => setEditing(false)}
                   disabled={saving}
                 >
-                  Anuleaza
+                  Cancel
                 </button>
                 <button type="submit" className="btn-primary" disabled={saving}>
-                  {saving ? "Se salveaza..." : "Salveaza"}
+                  {saving ? "Saving..." : "Save"}
                 </button>
               </div>
             </form>
@@ -131,7 +131,7 @@ export default function AccountPage() {
             <>
               <dl className="profil-list">
                 <div className="profil-row">
-                  <dt>Nume</dt>
+                  <dt>Name</dt>
                   <dd>
                     {profil.prenume} {profil.nume}
                   </dd>
@@ -141,18 +141,18 @@ export default function AccountPage() {
                   <dd>{profil.email}</dd>
                 </div>
                 <div className="profil-row">
-                  <dt>Telefon</dt>
+                  <dt>Phone</dt>
                   <dd>{profil.telefon || "-"}</dd>
                 </div>
                 <div className="profil-row">
-                  <dt>Adresa</dt>
+                  <dt>Address</dt>
                   <dd>{profil.adresa || "-"}</dd>
                 </div>
               </dl>
 
               <div className="profil-actions">
                 <button type="button" className="btn-primary" onClick={startEdit}>
-                  Editeaza
+                  Edit
                 </button>
               </div>
             </>

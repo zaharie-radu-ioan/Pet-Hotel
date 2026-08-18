@@ -5,6 +5,7 @@ __pycache__/
 .env
 
 .idea/
+**/.vite/
 
 .DS_Store
 Thumbs.db
