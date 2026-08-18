@@ -145,20 +145,30 @@ class ActivitateResponse(BaseModel):
     ora_final: datetime | None
     status: str
     observatii: str | None
-    animal: ActivitateAnimalResponse
-    camera: ActivitateCameraResponse
+    animal: ActivitateAnimalResponse | None = None
+    camera: ActivitateCameraResponse | None = None
+
 
 class ActivitateStatusUpdate(BaseModel):
     status: str
+
 
 class ActivitateCreate(BaseModel):
     tip_activitate: str
     ora_inceput: datetime
     ora_final: datetime | None = None
     observatii: str | None = None
-    id_cazare: int
+    id_cazare: int | None = None
     id_angajat: int
 
+class ActivitateUpdate(BaseModel):
+    tip_activitate: str
+    ora_inceput: datetime
+    ora_final: datetime | None = None
+    status: str
+    observatii: str | None = None
+    id_cazare: int | None = None
+    id_angajat: int
 
 # ----------------------------------------------------------------- animale
 

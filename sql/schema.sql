@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS activitate (
     creat_la TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     finalizat_la DATETIME NULL,
     observatii TEXT,
-    id_cazare INT NOT NULL,
+    id_cazare INT NULL,
     FOREIGN KEY (id_cazare) REFERENCES cazare(id_cazare) ON DELETE CASCADE,
     id_angajat INT,
     FOREIGN KEY (id_angajat) REFERENCES angajat(id_angajat) ON DELETE SET NULL,
