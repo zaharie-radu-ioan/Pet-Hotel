@@ -16,6 +16,7 @@ const dogBreeds = [
   "Cocker Spaniel",
   "Border Collie",
   "Teckel",
+  "Bichon",
   "Alta",
 ];
 
@@ -33,6 +34,38 @@ const catBreeds = [
   "Norvegiană de Pădure",
   "Alta",
 ];
+
+const breedImages = {
+  "Labrador Retriever": "./pet-avatars/labrador-photo.jpg",
+  "Golden Retriever": "./pet-avatars/golden-photo.jpg",
+  "Ciobănesc German": "./pet-avatars/german-shepherd-photo.jpg",
+  "Bulldog": "./pet-avatars/bulldog-photo.jpg",
+  "Beagle": "./pet-avatars/beagle-photo.jpg",
+  "Husky Siberian": "./pet-avatars/husky-photo.jpg",
+  "Rottweiler": "./pet-avatars/rottweiler-photo.jpg",
+  "Chihuahua": "./pet-avatars/chihuahua-photo.jpg",
+  "Pudel": "./pet-avatars/poodle-photo.jpg",
+  "Cocker Spaniel": "./pet-avatars/cocker-photo.jpg",
+  "Border Collie": "./pet-avatars/border-collie-photo.jpg",
+  "Teckel": "./pet-avatars/dachshund-photo.jpg",
+  "Bichon": "./pet-avatars/bichon-photo.jpg",
+
+  "British Shorthair": "./pet-avatars/british-shorthair-photo.jpg",
+  "Persană": "./pet-avatars/persian-photo.jpg",
+  "Siameză": "./pet-avatars/siamese-photo.jpg",
+  "Maine Coon": "./pet-avatars/maine-coon-photo.jpg",
+  "Bengaleză": "./pet-avatars/bengal-photo.jpg",
+  "Ragdoll": "./pet-avatars/ragdoll-photo.jpg",
+  "Sfinx": "./pet-avatars/sphynx-photo.jpg",
+  "Scottish Fold": "./pet-avatars/scottish-fold-photo.jpg",
+  "Angora Turcească": "./pet-avatars/turkish-angora-photo.jpg",
+  "Albastru de Rusia": "./pet-avatars/russian-blue-photo.jpg",
+  "Norvegiană de Pădure": "./pet-avatars/norwegian-forest-photo.jpg",
+};
+
+function getPetImage(animal) {
+  return breedImages[animal.rasa] || null;
+}
 
 export default function PetsPage() {
   const [animals, setAnimals] = useState([]);
@@ -275,9 +308,16 @@ export default function PetsPage() {
                     key={animal.id_animal}
                   >
                     <div className="pet-card-image">
-                      <span>
-                        {animal.specie === "Caine" ? "🐶" : "🐱"}
-                      </span>
+                      {getPetImage(animal) ? (
+                        <img
+                          src={getPetImage(animal)}
+                          alt={`${animal.rasa} - ${animal.nume}`}
+                        />
+                      ) : (
+                        <span>
+                          {animal.specie === "Caine" ? "🐶" : "🐱"}
+                        </span>
+                      )}
                     </div>
 
                     <div className="pet-card-content">

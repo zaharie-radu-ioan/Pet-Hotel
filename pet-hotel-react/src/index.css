@@ -1277,6 +1277,13 @@ body {
   overflow: hidden;
 }
 
+.pet-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .pet-card-image span {
   font-size: 56px;
 }
