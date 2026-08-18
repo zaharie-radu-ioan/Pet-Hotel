@@ -43,7 +43,7 @@ export default function LoginPage() {
       navigate("/", { replace: true });
     } catch (err) {
       setFormError(
-        err instanceof ApiError ? err.message : "Ceva n-a mers. Incearca din nou."
+        err instanceof ApiError ? err.message : "Something went wrong. Please try again."
       );
     } finally {
       setSubmitting(false);
@@ -64,7 +64,7 @@ export default function LoginPage() {
 
       <form onSubmit={handleSubmit} noValidate>
         {justRegistered && (
-          <p className="success-message">Cont creat. Autentifica-te.</p>
+          <p className="success-message">Account created. Please log in.</p>
         )}
 
         <TextField
@@ -90,7 +90,7 @@ export default function LoginPage() {
         />
 
         <button className="register-button" type="submit" disabled={submitting}>
-          {submitting ? "Se conecteaza..." : "Log in"}
+          {submitting ? "Signing in..." : "Log in"}
         </button>
 
         {formError && <p className="form-error">{formError}</p>}

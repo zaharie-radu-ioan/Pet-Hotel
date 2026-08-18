@@ -66,11 +66,11 @@ export default function RegisterPage() {
       if (err instanceof ApiError && err.status === 409) {
         setErrors((prev) => ({
           ...prev,
-          email: "Exista deja un cont cu acest email.",
+          email: "An account with this email already exists.",
         }));
       } else {
         setFormError(
-          err instanceof ApiError ? err.message : "Ceva n-a mers. Incearca din nou."
+          err instanceof ApiError ? err.message : "Something went wrong. Please try again."
         );
       }
     } finally {
@@ -114,7 +114,7 @@ export default function RegisterPage() {
           placeholder="Repeat your password" autoComplete="new-password" error={errors.confirmPassword} />
 
         <button className="register-button" type="submit" disabled={submitting}>
-          {submitting ? "Se creeaza contul..." : "Register"}
+          {submitting ? "Creating your account..." : "Register"}
         </button>
 
         {formError && <p className="form-error">{formError}</p>}

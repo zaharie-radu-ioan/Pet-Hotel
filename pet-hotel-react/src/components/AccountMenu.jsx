@@ -42,7 +42,7 @@ export default function AccountMenu({ variant = "light" }) {
         className={`account-trigger${variant === "dark" ? " account-trigger--dark" : ""}`}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="Meniu cont"
+        aria-label="Account menu"
         onClick={() => setOpen((v) => !v)}
       >
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
@@ -71,7 +71,7 @@ export default function AccountMenu({ variant = "light" }) {
             className="account-item"
             onClick={() => setOpen(false)}
           >
-            Contul meu
+            My account
           </Link>
           <Link
             to="/rezervari"
@@ -79,7 +79,7 @@ export default function AccountMenu({ variant = "light" }) {
             className="account-item"
             onClick={() => setOpen(false)}
           >
-            Rezervarile mele
+            My bookings
           </Link>
           <Link
             to="/animale"
@@ -87,7 +87,7 @@ export default function AccountMenu({ variant = "light" }) {
             className="account-item"
             onClick={() => setOpen(false)}
           >
-            Animalele mele
+            My pets
           </Link>
           <div className="account-sep" />
           <button
