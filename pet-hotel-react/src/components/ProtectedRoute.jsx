@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children }) {
   // Wait for the startup session check before deciding, otherwise we would
   // bounce to /login before the cookie session is restored.
   if (loading) {
-    return <div className="route-loading">Se verifica sesiunea...</div>;
+    return <div className="route-loading">Checking your session...</div>;
   }
   if (!user) {
     return <Navigate to="/login" replace />;

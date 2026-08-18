@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS utilizator (
 CREATE TABLE IF NOT EXISTS token_reinnoire (
     id_token      INT AUTO_INCREMENT PRIMARY KEY,
     id_utilizator INT NOT NULL,
-    hash_token    VARCHAR(64) NOT NULL UNIQUE,   -- sha256 în hex = 64 caractere
-    id_familie    VARCHAR(36) NOT NULL,          -- uuid4 = 36 caractere
+    hash_token    VARCHAR(64) NOT NULL UNIQUE,
+    id_familie    VARCHAR(36) NOT NULL,
     revocat       BOOLEAN DEFAULT FALSE,
     expira_la     TIMESTAMP NOT NULL,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -83,14 +83,17 @@ CREATE TABLE IF NOT EXISTS problema (
 );
 
 CREATE TABLE IF NOT EXISTS camera (
-    id_camera INT AUTO_INCREMENT PRIMARY KEY,
+    id_camera INT AUTO_INCREMENT PRIMARY KEY,.
+    cod VARCHAR(20) NOT NULL UNIQUE,
     tip_camera VARCHAR(50) NOT NULL,
     pret_noapte DECIMAL(10,2) NOT NULL CHECK (pret_noapte >= 0),
-    status ENUM('libera', 'ocupata', 'indisponibila') DEFAULT 'libera'
+    status ENUM('libera', 'ocupata', 'indisponibila') DEFAULT 'libera',
+    INDEX idx_camera_tip (tip_camera)
 );
 
 CREATE TABLE IF NOT EXISTS rezervare (
     id_rezervare INT AUTO_INCREMENT PRIMARY KEY,
+    cod CHAR(36) NOT NULL UNIQUE,
     data_inceput DATE NOT NULL,
     data_final DATE NOT NULL CHECK (data_final >= data_inceput),
     status ENUM('ceruta', 'confirmata', 'in_desfasurare', 'finalizata', 'anulata') DEFAULT 'ceruta',
@@ -104,22 +107,28 @@ CREATE TABLE IF NOT EXISTS cazare (
     id_cazare INT AUTO_INCREMENT PRIMARY KEY,
     data_check_in DATETIME NOT NULL,
     data_check_out DATETIME NOT NULL CHECK (data_check_out > data_check_in),
+    pret_camera_noapte DECIMAL(10,2) NOT NULL CHECK (pret_camera_noapte >= 0),
     observatii TEXT,
     id_rezervare INT NOT NULL,
     FOREIGN KEY (id_rezervare) REFERENCES rezervare(id_rezervare) ON DELETE CASCADE,
     id_animal INT NOT NULL,
     FOREIGN KEY (id_animal) REFERENCES animal(id_animal) ON DELETE RESTRICT,
     id_camera INT NOT NULL,
-    FOREIGN KEY (id_camera) REFERENCES camera(id_camera) ON DELETE RESTRICT
+    FOREIGN KEY (id_camera) REFERENCES camera(id_camera) ON DELETE RESTRICT,
+    INDEX idx_cazare_camera_interval (id_camera, data_check_in, data_check_out),
+    INDEX idx_cazare_animal_interval (id_animal, data_check_in, data_check_out)
 );
 
 CREATE TABLE IF NOT EXISTS serviciu (
     id_serviciu INT AUTO_INCREMENT PRIMARY KEY,
+    tip ENUM('serviciu', 'pachet') NOT NULL DEFAULT 'serviciu',
     denumire VARCHAR(100) NOT NULL UNIQUE,
     descriere TEXT,
+    continut JSON NULL CHECK (continut IS NULL OR JSON_VALID(continut)),
     pret_curent DECIMAL(10,2) NOT NULL CHECK (pret_curent >= 0),
     durata_minute INT,
-    activ BOOLEAN DEFAULT TRUE
+    activ BOOLEAN DEFAULT TRUE,
+    INDEX idx_serviciu_tip (tip)
 );
 
 CREATE TABLE IF NOT EXISTS cazare_serviciu (

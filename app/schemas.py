@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Literal
 
 class RegisterRequest(BaseModel):
     email: EmailStr
@@ -23,18 +24,92 @@ class UserPublic(BaseModel):
     id_utilizator: int
     rol: str
 
-class RezervareNoua(BaseModel):
-    data_inceput: date
-    data_final: date
+
+# ---------------------------------------------------------------- catalog
+
+class IncludedService(BaseModel):
+    name: str
+    per_night: int
 
 
-class RezervarePublic(BaseModel):
-    data_inceput: date
-    data_final: date
+class PackagePublic(BaseModel):
+    id: int
+    name: str
+    description: str | None = None
+    price_per_night: Decimal
+    included_services: list[IncludedService] = []
+
+
+class RoomTypeAvailability(BaseModel):
+    room_type: str
+    price_per_night: Decimal
+    rooms_free: int
+
+
+# ----------------------------------------------------------- reservations
+
+class NewStay(BaseModel):
+    """One animal, in one room type, on one package."""
+    animal_id: int
+    room_type: str = Field(min_length=1, max_length=50)
+    package_id: int
+
+
+class NewReservation(BaseModel):
+    start_date: date
+    end_date: date
+    stays: list[NewStay] = Field(min_length=1, max_length=10)
+
+
+class StayPublic(BaseModel):
+    animal: str
+    room_type: str
+    package: str | None = None
+    room_price_per_night: Decimal
+    package_price_per_night: Decimal = Decimal("0.00")
+
+
+class ReservationPublic(BaseModel):
+    code: str
+    start_date: date
+    end_date: date
+    nights: int
     status: str
     total: Decimal
     created_at: datetime
+    stays: list[StayPublic] = []
 
+
+# --------------------------------------------------------- invoice/payment
+
+class InvoiceLine(BaseModel):
+    description: str
+    quantity: int
+    unit_price: Decimal
+    amount: Decimal
+    included_in_package: bool = False
+
+
+class InvoicePublic(BaseModel):
+    number: str
+    issued_at: datetime
+    status: str
+    total: Decimal
+    client: str
+    reservation_code: str
+    start_date: date
+    end_date: date
+    nights: int
+    lines: list[InvoiceLine] = []
+    payment_method: str | None = None
+    paid_at: datetime | None = None
+
+
+class NewPayment(BaseModel):
+    method: Literal["card", "numerar", "transfer"]
+
+
+# ------------------------------------------------------------------ profil
 
 class ProfilPublic(BaseModel):
     email: EmailStr
@@ -49,6 +124,9 @@ class ProfilUpdate(BaseModel):
     prenume: str = Field(min_length=1)
     telefon: str | None = None
     adresa: str | None = None
+
+
+# -------------------------------------------------------------- activitati
 
 class ActivitateAnimalResponse(BaseModel):
     id_animal: int
@@ -80,6 +158,9 @@ class ActivitateCreate(BaseModel):
     observatii: str | None = None
     id_cazare: int
     id_angajat: int
+
+
+# ----------------------------------------------------------------- animale
 
 class AnimalPublic(BaseModel):
     id_animal: int
@@ -113,4 +194,3 @@ class AnimalUpdate(BaseModel):
     greutate: Decimal | None = None
     sterilizat: bool = False
     observatii: str | None = None
-

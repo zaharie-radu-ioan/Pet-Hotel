@@ -5,7 +5,7 @@ from slowapi.errors import RateLimitExceeded
 
 from app import config
 from app.limiter import limiter
-from app.routers import auth, rezervari, profile, animale, activitati
+from app.routers import auth, catalog, rezervari, profile, animale, activitati
 
 app = FastAPI(title="Pet-Hotel API")
 
@@ -23,10 +23,10 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(catalog.router)
 app.include_router(rezervari.router)
 app.include_router(profile.router)
 app.include_router(activitati.router)
-
 app.include_router(animale.router)
 
 @app.get("/")

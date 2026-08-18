@@ -7,6 +7,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleRoute from "./components/RoleRoute";
 import BookingPage from "./pages/BookingPage";
+import FacturaPage from "./pages/FacturaPage";
 import AccountPage from "./pages/AccountPage";
 import PetsPage from "./pages/PetsPage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
@@ -46,6 +47,16 @@ export default function App() {
           <ProtectedRoute>
             <RoleRoute allowedRoles={["client"]}>
               <BookingPage />
+            </RoleRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/rezervari/:code/factura"
+        element={
+          <ProtectedRoute>
+            <RoleRoute allowedRoles={["client"]}>
+              <FacturaPage />
             </RoleRoute>
           </ProtectedRoute>
         }

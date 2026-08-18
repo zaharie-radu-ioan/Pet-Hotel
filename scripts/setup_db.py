@@ -23,7 +23,7 @@ def first_code_line(text):
 def apply_file(filename, delimiter=";"):
     path = SQL_DIR / filename
     if not path.exists():
-        print(f"INFO: Fisierul {filename} nu exista.")
+        print(f"INFO: file {filename} does not exist.")
         return
 
     sql_text = path.read_text(encoding="utf-8")
@@ -39,12 +39,12 @@ def apply_file(filename, delimiter=";"):
             try:
                 cur.execute(statement)
             except Exception as error:
-                mesaj = (
-                    f"Eroare la rularea '{filename}' (blocul {index} din {len(statements)}).\n"
-                    f"Comanda care a esuat: {first_code_line(statement)}\n"
-                    f"Motivul: {error}"
+                message = (
+                    f"Error while running '{filename}' (statement {index} of {len(statements)}).\n"
+                    f"Failed statement: {first_code_line(statement)}\n"
+                    f"Reason: {error}"
                 )
-                raise RuntimeError(mesaj) from error
+                raise RuntimeError(message) from error
 
         conn.commit()
         return len(statements)
