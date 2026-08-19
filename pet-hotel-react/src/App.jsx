@@ -13,6 +13,7 @@ import PetsPage from "./pages/PetsPage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import EmployeeTasksPage from "./pages/EmployeeTasksPage";
+import BusinessIntelligence from "./pages/BusinessIntelligence";
 
 import { AuthContext } from "./auth/AuthContext";
 
@@ -108,6 +109,16 @@ export default function App() {
         }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
+      <Route
+        path="/admin/business-intelligence"
+        element={
+            <ProtectedRoute>
+            <RoleRoute allowedRoles={["admin"]}>
+                <BusinessIntelligence />
+            </RoleRoute>
+            </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

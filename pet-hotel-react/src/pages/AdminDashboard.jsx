@@ -19,7 +19,9 @@ export default function AdminDashboard() {
         setEmployees(data);
       } catch (err) {
         setError(
-          err instanceof ApiError ? err.message : "We couldn't load the employees."
+          err instanceof ApiError
+            ? err.message
+            : "We couldn't load the employees."
         );
       } finally {
         setLoading(false);
@@ -30,42 +32,98 @@ export default function AdminDashboard() {
   return (
     <div className="admin-page">
       <AppHeader />
+
       <main className="admin-page-body">
-        <h1>Employees</h1>
-        <p className="muted-text">
-          Select an employee to view and manage their assigned tasks.
-        </p>
 
-        {loading && <p className="muted-text">Loading employees...</p>}
-        {error && <p className="error-text">{error}</p>}
+        {/* BUSINESS INTELLIGENCE */}
 
-        {!loading && !error && employees.length === 0 && (
-          <div className="card" style={{ marginTop: "20px" }}>
-            <h2>No employees found</h2>
-            <p className="muted-text">There are no active employee accounts yet.</p>
+        <section className="bi-section">
+          <div className="bi-card">
+            <div className="bi-card-content">
+              <span className="bi-label">
+                ANALYTICS
+              </span>
+
+              <h1>
+                Business Intelligence
+              </h1>
+
+              <p>
+                View hotel performance, revenue,
+                reservations and other key business
+                indicators.
+              </p>
+            </div>
+
+            <Link
+              to="/admin/business-intelligence"
+              className="bi-card-button"
+            >
+              View Business Intelligence
+            </Link>
           </div>
-        )}
+        </section>
 
-        {!loading && employees.length > 0 && (
-          <div className="employee-grid">
-            {employees.map((emp) => (
-              <Link
-                to={`/admin/employees/${emp.id_angajat}`}
-                className="employee-card"
-                key={emp.id_angajat}
-              >
-                <div className="employee-avatar" aria-hidden="true">
-                  {emp.nume?.[0]?.toUpperCase()}
-                  {emp.prenume?.[0]?.toUpperCase()}
-                </div>
-                <h2>
-                  {emp.prenume} {emp.nume}
-                </h2>
-                <p>{emp.telefon || "No phone number"}</p>
-              </Link>
-            ))}
-          </div>
-        )}
+        {/* EMPLOYEES */}
+
+        <section className="employees-section">
+          <h1>Employees</h1>
+
+          <p className="muted-text">
+            Select an employee to view and manage their assigned tasks.
+          </p>
+
+          {loading && (
+            <p className="muted-text">
+              Loading employees...
+            </p>
+          )}
+
+          {error && (
+            <p className="error-text">
+              {error}
+            </p>
+          )}
+
+          {!loading && !error && employees.length === 0 && (
+            <div className="card" style={{ marginTop: "20px" }}>
+              <h2>No employees found</h2>
+
+              <p className="muted-text">
+                There are no active employee accounts yet.
+              </p>
+            </div>
+          )}
+
+          {!loading && employees.length > 0 && (
+            <div className="employee-grid">
+              {employees.map((emp) => (
+                <Link
+                  to={`/admin/employees/${emp.id_angajat}`}
+                  className="employee-card"
+                  key={emp.id_angajat}
+                >
+                  <div
+                    className="employee-avatar"
+                    aria-hidden="true"
+                  >
+                    {emp.nume?.[0]?.toUpperCase()}
+                    {emp.prenume?.[0]?.toUpperCase()}
+                  </div>
+
+                  <h2>
+                    {emp.prenume} {emp.nume}
+                  </h2>
+
+                  <p>
+                    {emp.telefon || "No phone number"}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+
       </main>
     </div>
   );
