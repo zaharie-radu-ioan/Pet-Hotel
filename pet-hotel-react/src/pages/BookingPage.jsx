@@ -6,7 +6,6 @@ import { getAvailability, listPackages } from "../api/catalog";
 import { createReservation, listReservations } from "../api/rezervari";
 import AppHeader from "../components/AppHeader";
 
-// The database keeps its status values in Romanian; only the labels are English.
 const STATUS_LABELS = {
   ceruta: "Requested",
   confirmata: "Confirmed",
@@ -30,6 +29,16 @@ function countNights(startDate, endDate) {
 
 function money(value) {
   return `${Number(value).toFixed(2)} RON`;
+}
+
+
+function day(value) {
+  if (!value) return "";
+  return new Date(`${value}T00:00:00`).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 const EMPTY_STAY = { animal_id: "", room_type: "", package_id: "" };
@@ -218,7 +227,7 @@ export default function BookingPage() {
   return (
     <div className="dashboard">
       <AppHeader />
-      <main className="dashboard-body">
+      <main className="dashboard-body booking-body">
         <h1>My bookings</h1>
         <p className="muted-text">
           Pick your dates, then a room and a package for each pet.
@@ -226,10 +235,10 @@ export default function BookingPage() {
 
         <section className="card">
           <h2>New booking</h2>
-          <form onSubmit={handleSubmit} className="rezervare-form" noValidate>
-            <div className="date-row">
-              <label className="date-label">
-                Check-in
+          <form onSubmit={handleSubmit} className="bk-form" noValidate>
+            <div className="bk-dates">
+              <label className="bk-field">
+                <span className="bk-field-label">Check-in</span>
                 <input
                   type="date"
                   min={minDate}
@@ -237,8 +246,8 @@ export default function BookingPage() {
                   onChange={(e) => handleStartDateChange(e.target.value)}
                 />
               </label>
-              <label className="date-label">
-                Check-out
+              <label className="bk-field">
+                <span className="bk-field-label">Check-out</span>
                 <input
                   type="date"
                   min={startDate || minDate}
@@ -250,28 +259,36 @@ export default function BookingPage() {
             </div>
 
             {nights > 0 && (
-              <p className="muted-text">
-                {nights} {nights === 1 ? "night" : "nights"}
-                {availability.length > 0 && (
-                  <>
-                    {" — "}
-                    {availability
-                      .map(
-                        (room) =>
-                          `${room.room_type}: ${room.rooms_free} free (${money(
-                            room.price_per_night
-                          )}/night)`
-                      )
-                      .join(", ")}
-                  </>
-                )}
-              </p>
+              <div className="bk-availability">
+                <span className="bk-nights">
+                  {nights} {nights === 1 ? "night" : "nights"}
+                </span>
+                {availability.map((room) => (
+                  <span
+                    key={room.room_type}
+                    className={`bk-chip${room.rooms_free === 0 ? " bk-chip-empty" : ""}`}
+                  >
+                    {room.room_type} · {room.rooms_free} free ·{" "}
+                    {money(room.price_per_night)}/night
+                  </span>
+                ))}
+              </div>
             )}
 
             {stays.map((stay, index) => (
-              <div key={index} className="stay-row">
-                <label className="field-label">
-                  Pet
+              <div key={index} className="bk-stay">
+                {stays.length > 1 && (
+                  <button
+                    type="button"
+                    className="bk-remove"
+                    onClick={() => removeStay(index)}
+                  >
+                    Remove
+                  </button>
+                )}
+
+                <label className="bk-field">
+                  <span className="bk-field-label">Pet</span>
                   <select
                     value={stay.animal_id}
                     onChange={(e) => updateStay(index, "animal_id", e.target.value)}
@@ -285,8 +302,8 @@ export default function BookingPage() {
                   </select>
                 </label>
 
-                <label className="field-label">
-                  Room
+                <label className="bk-field">
+                  <span className="bk-field-label">Room</span>
                   <select
                     value={stay.room_type}
                     disabled={nights <= 0}
@@ -297,15 +314,14 @@ export default function BookingPage() {
                     </option>
                     {availability.map((room) => (
                       <option key={room.room_type} value={room.room_type}>
-                        {room.room_type} — {money(room.price_per_night)}/night (
-                        {room.rooms_free} free)
+                        {room.room_type} — {money(room.price_per_night)}/night
                       </option>
                     ))}
                   </select>
                 </label>
 
-                <label className="field-label">
-                  Package
+                <label className="bk-field">
+                  <span className="bk-field-label">Package</span>
                   <select
                     value={stay.package_id}
                     onChange={(e) => updateStay(index, "package_id", e.target.value)}
@@ -318,38 +334,29 @@ export default function BookingPage() {
                     ))}
                   </select>
                 </label>
-
-                {stays.length > 1 && (
-                  <button
-                    type="button"
-                    className="btn-ghost"
-                    onClick={() => removeStay(index)}
-                  >
-                    Remove
-                  </button>
-                )}
               </div>
             ))}
 
             {packageSummary(stays, packages)}
 
-            <button type="button" className="btn-ghost" onClick={addStay}>
+            <button type="button" className="bk-add" onClick={addStay}>
               + Add another pet
             </button>
 
             {nights > 0 && (
-              <p className="total-preview">
-                Estimated total: <strong>{money(estimatedTotal())}</strong>
-              </p>
+              <div className="bk-total">
+                <span className="bk-total-label">Estimated total</span>
+                <span className="bk-total-value">{money(estimatedTotal())}</span>
+              </div>
             )}
 
-            <button className="register-button" type="submit" disabled={submitting}>
+            <button className="bk-submit" type="submit" disabled={submitting}>
               {submitting ? "Sending..." : "Request booking"}
             </button>
           </form>
 
-          {formError && <p className="form-error">{formError}</p>}
-          {success && <p className="success-message">{success}</p>}
+          {formError && <p className="bk-message bk-message-error">{formError}</p>}
+          {success && <p className="bk-message bk-message-success">{success}</p>}
         </section>
 
         <section className="card list-card">
@@ -357,18 +364,18 @@ export default function BookingPage() {
           {loadingList ? (
             <p className="muted-text">Loading...</p>
           ) : listError ? (
-            <p className="form-error">{listError}</p>
+            <p className="bk-message bk-message-error">{listError}</p>
           ) : reservations.length === 0 ? (
             <p className="muted-text">You have no bookings yet.</p>
           ) : (
-            <ul className="rezervari-list">
+            <ul className="bk-list">
               {reservations.map((reservation) => (
-                <li key={reservation.code} className="rezervare-item">
-                  <div>
-                    <div className="rezervare-dates">
-                      {reservation.start_date} &rarr; {reservation.end_date}
+                <li key={reservation.code} className="bk-item">
+                  <div className="bk-item-main">
+                    <div className="bk-item-dates">
+                      {day(reservation.start_date)} &rarr; {day(reservation.end_date)}
                     </div>
-                    <div className="muted-text">
+                    <p className="bk-item-pets">
                       {reservation.stays
                         .map(
                           (stay) =>
@@ -377,15 +384,15 @@ export default function BookingPage() {
                             })`
                         )
                         .join(" · ")}
-                    </div>
+                    </p>
                   </div>
-                  <div className="rezervare-side">
+                  <div className="bk-item-side">
                     <span className={`status-badge status-${reservation.status}`}>
                       {STATUS_LABELS[reservation.status] ?? reservation.status}
                     </span>
-                    <strong>{money(reservation.total)}</strong>
+                    <span className="bk-item-price">{money(reservation.total)}</span>
                     <Link
-                      className="link-button"
+                      className="bk-item-link"
                       to={`/rezervari/${reservation.code}/factura`}
                     >
                       View invoice
@@ -409,7 +416,7 @@ function packageSummary(stays, packages) {
   if (chosen.length === 0) return null;
 
   return (
-    <ul className="package-help">
+    <ul className="bk-help">
       {chosen.map((pack) => (
         <li key={pack.id}>
           <strong>{pack.name}:</strong>{" "}

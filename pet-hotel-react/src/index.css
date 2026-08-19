@@ -840,11 +840,6 @@ body {
   font-weight: 600;
 }
 
-.rezervare-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
 
 .date-label {
   display: flex;
@@ -995,14 +990,7 @@ body {
 .list-card {
   margin-top: 24px;
 }
-.rezervari-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+
 .rezervare-item {
   display: flex;
   align-items: center;
@@ -1236,32 +1224,6 @@ body {
 }
 .date-row .date-label {
   flex: 1;
-}
-
-.stay-row {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-}
-.stay-row .field-label {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 12px;
-}
-.stay-row select {
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--navy);
-  background: var(--white);
 }
 
 .package-help {
@@ -1978,6 +1940,313 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .inv-pdf-button,
   .inv-pay-button {
+    transition: none;
+  }
+}
+
+dashboard-body.booking-body {
+  width: min(94%, 720px);
+}
+
+.bk-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.bk-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.bk-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* Without this a long <option> sets the column width and the row overflows
+     the card: grid and flex children default to min-width: auto. */
+  min-width: 0;
+}
+
+.bk-field-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bk-field input,
+.bk-field select {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.bk-field input:focus,
+.bk-field select:focus {
+  outline: 0;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(19, 37, 102, 0.1);
+}
+
+.bk-field select:disabled,
+.bk-field input:disabled {
+  background: #f6f7fa;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.bk-availability {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.bk-nights {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.bk-chip {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: #f1f3f9;
+  color: var(--navy);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bk-chip-empty {
+  background: #ffe3e3;
+  color: #a12626;
+}
+
+.bk-stay {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.bk-remove {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bk-remove:hover {
+  border-color: #a12626;
+  color: #a12626;
+}
+
+.bk-add {
+  align-self: flex-start;
+  padding: 10px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--navy);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bk-add:hover {
+  border-color: var(--navy);
+  border-style: solid;
+}
+
+.bk-help {
+  margin: 0;
+  padding: 12px 14px;
+  list-style: none;
+  border-radius: 10px;
+  background: #f4f6ff;
+  color: var(--navy);
+  font-size: 13px;
+}
+
+.bk-help li + li {
+  margin-top: 4px;
+}
+
+.bk-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid #e6e8ef;
+}
+
+.bk-total-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bk-total-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.bk-submit {
+  align-self: flex-end;
+  padding: 12px 26px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--blue);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.bk-submit:hover:not(:disabled) {
+  background: var(--navy);
+}
+
+.bk-submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.bk-message {
+  margin: 14px 0 0;
+  font-size: 13px;
+}
+
+.bk-message-error { color: var(--error); }
+.bk-message-success { color: #1f7a3d; }
+
+/* ---------- history ---------- */
+
+.bk-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bk-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f1f5;
+}
+
+.bk-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.bk-item-main {
+  min-width: 0;
+}
+
+.bk-item-dates {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.bk-item-pets {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.bk-item-side {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  /* Keeps "170.00 RON" on one line when the pet names get long. */
+  white-space: nowrap;
+}
+
+.bk-item-price {
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bk-item-link {
+  padding: 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.bk-item-link:hover {
+  border-color: var(--navy);
+}
+
+.booking-body button:focus-visible,
+.booking-body a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+@media (max-width: 620px) {
+  .bk-dates,
+  .bk-stay {
+    grid-template-columns: 1fr;
+  }
+
+  .bk-submit,
+  .bk-add {
+    align-self: stretch;
+    text-align: center;
+  }
+
+  .bk-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .bk-item-side {
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bk-submit {
     transition: none;
   }
 }
