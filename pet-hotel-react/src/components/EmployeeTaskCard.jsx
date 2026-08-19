@@ -24,6 +24,12 @@ export default function EmployeeTaskCard({
   return (
     <article className="employee-task-card">
       <div className="employee-task-details">
+        
+        <div>
+          <span className="employee-task-label">Activity Type</span>
+          <strong>{activity.tip_activitate ?? "-"}</strong>
+        </div>
+
         <div>
           <span className="employee-task-label">Animal</span>
           <strong>{activity.animal?.nume ?? "-"}</strong>
