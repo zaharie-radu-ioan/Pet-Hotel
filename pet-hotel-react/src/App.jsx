@@ -11,6 +11,8 @@ import FacturaPage from "./pages/FacturaPage";
 import AccountPage from "./pages/AccountPage";
 import PetsPage from "./pages/PetsPage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import EmployeeTasksPage from "./pages/EmployeeTasksPage";
 
 import { AuthContext } from "./auth/AuthContext";
 
@@ -31,13 +33,37 @@ export default function App() {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            {user?.rol === "angajat" ? (
+            {user?.rol === "admin" ? (
+              <RoleRoute allowedRoles={["admin"]}>
+                <AdminDashboard />
+              </RoleRoute>
+            ) : user?.rol === "angajat" ? (
               <RoleRoute allowedRoles={["angajat"]}>
                 <EmployeeDashboard />
               </RoleRoute>
             ) : (
               <DashboardPage />
             )}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <RoleRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
+            </RoleRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/employees/:id"
+        element={
+          <ProtectedRoute>
+            <RoleRoute allowedRoles={["admin"]}>
+              <EmployeeTasksPage />
+            </RoleRoute>
           </ProtectedRoute>
         }
       />

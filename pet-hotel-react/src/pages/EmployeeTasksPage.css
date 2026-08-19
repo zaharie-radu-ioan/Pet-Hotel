@@ -1,0 +1,171 @@
+.employee-tasks-page {
+  min-height: 100vh;
+  background: var(--green);
+  color: #ffffff;
+  font-family: "Poppins", Arial, sans-serif;
+}
+
+.employee-tasks-page-body {
+  width: min(98%, 1600px);
+  margin: 0 auto;
+  padding: 32px 0 60px;
+}
+
+.employee-tasks-page .back-link {
+  display: inline-block;
+  margin-bottom: 14px;
+
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.employee-tasks-page .back-link:hover {
+  color: #ffffff;
+}
+
+.employee-tasks-page .muted-text {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.employee-tasks-page .error-text {
+  color: #ffd7d7;
+}
+
+.employee-tasks-page .card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.employee-tasks-page .card h2 {
+  color: #ffffff;
+}
+
+.tasks-page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin: 6px 0 20px;
+}
+
+.tasks-page-heading h1 {
+  margin: 0 0 4px;
+  color: #ffffff;
+}
+
+.table-wrapper,
+.tasks-table {
+  color: var(--navy);
+}
+
+.tasks-table th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.tasks-table td {
+  color: var(--navy);
+}
+
+.tasks-table-notes {
+  color: var(--muted);
+}
+
+
+.table-wrapper {
+  width: 100%;
+
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.tasks-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.tasks-table th,
+.tasks-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+
+  white-space: normal;
+  word-break: break-word;
+}
+
+.tasks-table th:last-child,
+.tasks-table td:last-child {
+  width: 190px;
+}
+
+.tasks-table-notes {
+  color: var(--muted);
+}
+
+.tasks-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.task-status {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.task-status--planificata {
+  background: #fff4e0;
+  color: #a15c00;
+}
+
+.task-status--in_curs {
+  background: #e8e3ff;
+  color: #4b31a1;
+}
+
+.task-status--finalizata {
+  background: #e3f7e8;
+  color: #1f7a3d;
+}
+
+.task-status--anulata {
+  background: #ffe3e3;
+  color: #a12626;
+}
+
+.tasks-table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tasks-table-actions .btn-ghost,
+.tasks-table-actions .btn-danger {
+  padding: 6px 10px;
+  font-size: 11.5px;
+}
+
+@media (max-width: 700px) {
+  .tasks-page-heading {
+    flex-direction: column;
+  }
+
+  .tasks-table th:last-child,
+  .tasks-table td:last-child {
+    width: auto;
+  }
+}
