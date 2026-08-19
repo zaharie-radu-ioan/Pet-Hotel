@@ -50,9 +50,8 @@ export async function tryRestoreSession() {
   }
 }
 
-export async function apiFetch(path, options = {}, _retry = false) {
+async function request(path, options = {}, _retry = false) {
   const headers = new Headers(options.headers ?? {});
-  headers.set("Accept", "application/json");
   if (options.body && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
@@ -67,10 +66,9 @@ export async function apiFetch(path, options = {}, _retry = false) {
   });
 
   if (res.ok) {
-    return parseBody(res);
+    return res;
   }
 
-  // Skip refresh for endpoints that would loop or make no sense.
   const isAuthEndpoint =
     path.startsWith("/auth/refresh") || path.startsWith("/auth/login");
 
@@ -84,16 +82,46 @@ export async function apiFetch(path, options = {}, _retry = false) {
     } finally {
       refreshPromise = null;
     }
-    return apiFetch(path, options, true);
+    return request(path, options, true);
   }
 
   const payload = await parseBody(res).catch(() => null);
   throw new ApiError(res.status, errorMessage(payload, res.status), payload);
 }
 
-// FastAPI sends "detail" as a string for our own HTTPExceptions, but as a list
-// of { loc, msg, type } objects when the request body fails validation (422).
-// Without this, that list gets stringified into "[object Object]".
+export async function apiFetch(path, options = {}) {
+  const headers = new Headers(options.headers ?? {});
+  headers.set("Accept", "application/json");
+  const res = await request(path, { ...options, headers });
+  return parseBody(res);
+}
+
+
+export async function apiDownload(path, options = {}) {
+  const res = await request(path, options);
+  return {
+    blob: await res.blob(),
+    filename: filenameFrom(res.headers.get("Content-Disposition")),
+  };
+}
+
+function filenameFrom(header) {
+  if (!header) return null;
+  const match = /filename="?([^"';]+)"?/i.exec(header);
+  return match ? match[1].trim() : null;
+}
+
+export function saveBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function errorMessage(payload, status) {
   const detail = payload?.detail;
 

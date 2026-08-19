@@ -7,3 +7,4 @@ python-jose[cryptography]
 slowapi
 bcrypt==3.2.2
 email-validator
+reportlab

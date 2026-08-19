@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ApiError } from "../api/client";
-import { getInvoice, payReservation } from "../api/rezervari";
+import { ApiError, saveBlob } from "../api/client";
+import { downloadInvoicePdf, getInvoice, payReservation } from "../api/rezervari";
 import AppHeader from "../components/AppHeader";
 
 const STATUS_LABELS = {
-  issued: "Issued",
+  issued: "Payment due",
   paid: "Paid",
   cancelled: "Cancelled",
 };
@@ -21,6 +21,19 @@ function money(value) {
   return `${Number(value).toFixed(2)} RON`;
 }
 
+// The API sends plain dates ("2026-08-20"). Parsing that string alone gives
+// midnight UTC, which can land on the previous day once it is shown in a local
+// timezone, so the time is pinned to local midnight first.
+function day(value) {
+  if (!value) return "";
+  const date = value.length === 10 ? new Date(`${value}T00:00:00`) : new Date(value);
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default function FacturaPage() {
   const { code } = useParams();
 
@@ -31,6 +44,9 @@ export default function FacturaPage() {
   const [method, setMethod] = useState("card");
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState("");
+
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
 
   useEffect(() => {
     async function loadInvoice() {
@@ -64,11 +80,28 @@ export default function FacturaPage() {
     }
   }
 
+  async function handleDownload() {
+    setDownloadError("");
+    setDownloading(true);
+    try {
+      // The backend builds the PDF and names the file; the fallback only
+      // matters if that header does not reach us.
+      const { blob, filename } = await downloadInvoicePdf(code);
+      saveBlob(blob, filename ?? `Invoice_${invoice.number}.pdf`);
+    } catch (err) {
+      setDownloadError(
+        err instanceof ApiError ? err.message : "The PDF could not be generated."
+      );
+    } finally {
+      setDownloading(false);
+    }
+  }
+
   return (
     <div className="dashboard">
       <AppHeader />
-      <main className="dashboard-body">
-        <Link className="link-button" to="/rezervari">
+      <main className="dashboard-body invoice-body">
+        <Link className="link-button inv-back" to="/rezervari">
           &larr; Back to bookings
         </Link>
 
@@ -77,92 +110,126 @@ export default function FacturaPage() {
         ) : error ? (
           <p className="form-error">{error}</p>
         ) : (
-          <section className="card invoice-card">
-            <div className="invoice-head">
+          <article className="inv-doc">
+            <header className="inv-band">
               <div>
-                <h2>Invoice {invoice.number}</h2>
-                <p className="muted-text">
-                  Issued on {new Date(invoice.issued_at).toLocaleDateString("en-GB")}
+                <p className="inv-eyebrow">Invoice</p>
+                <h2 className="inv-number">{invoice.number}</h2>
+              </div>
+              <div className="inv-band-actions">
+                <span className={`inv-chip inv-chip-${invoice.status}`}>
+                  {STATUS_LABELS[invoice.status] ?? invoice.status}
+                </span>
+                <button
+                  className="inv-pdf-button"
+                  type="button"
+                  onClick={handleDownload}
+                  disabled={downloading}
+                >
+                  {downloading ? "Preparing..." : "Download PDF"}
+                </button>
+              </div>
+            </header>
+
+            <section className="inv-meta">
+              <div>
+                <p className="inv-meta-label">Billed to</p>
+                <p className="inv-meta-value">{invoice.client}</p>
+              </div>
+              <div>
+                <p className="inv-meta-label">Stay</p>
+                <p className="inv-meta-value">
+                  {day(invoice.start_date)} &rarr; {day(invoice.end_date)}
                   {" · "}
-                  {invoice.client}
-                </p>
-                <p className="muted-text">
-                  {invoice.start_date} &rarr; {invoice.end_date} ({invoice.nights}{" "}
-                  {invoice.nights === 1 ? "night" : "nights"})
+                  {invoice.nights} {invoice.nights === 1 ? "night" : "nights"}
                 </p>
               </div>
-              <span className={`status-badge invoice-${invoice.status}`}>
-                {STATUS_LABELS[invoice.status] ?? invoice.status}
-              </span>
+              <div>
+                <p className="inv-meta-label">Issued</p>
+                <p className="inv-meta-value">{day(invoice.issued_at)}</p>
+              </div>
+            </section>
+
+            <div className="inv-lines">
+              <table className="inv-table">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit price</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoice.lines.map((line, index) => (
+                    <tr
+                      key={index}
+                      className={line.included_in_package ? "inv-row-included" : ""}
+                    >
+                      <td>
+                        {line.description}
+                        {line.included_in_package && (
+                          <span className="inv-tag">included</span>
+                        )}
+                      </td>
+                      <td>{line.quantity}</td>
+                      <td>{money(line.unit_price)}</td>
+                      <td>{money(line.amount)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
-            <table className="invoice-table">
-              <thead>
-                <tr>
-                  <th>Description</th>
-                  <th>Qty</th>
-                  <th>Unit price</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoice.lines.map((line, index) => (
-                  <tr
-                    key={index}
-                    className={line.included_in_package ? "line-included" : ""}
-                  >
-                    <td>
-                      {line.description}
-                      {line.included_in_package && (
-                        <span className="included-tag">included in package</span>
-                      )}
-                    </td>
-                    <td>{line.quantity}</td>
-                    <td>{money(line.unit_price)}</td>
-                    <td>{money(line.amount)}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan={3}>Total</td>
-                  <td>{money(invoice.total)}</td>
-                </tr>
-              </tfoot>
-            </table>
+            <div className="inv-total">
+              <span className="inv-total-label">
+                {invoice.status === "paid" ? "Total paid" : "Total due"}
+              </span>
+              <span className="inv-total-value">{money(invoice.total)}</span>
+            </div>
 
             {invoice.status === "paid" ? (
-              <p className="success-message">
+              <p className="inv-paid">
                 Paid by {METHOD_LABELS[invoice.payment_method] ?? invoice.payment_method}
-                {invoice.paid_at &&
-                  ` on ${new Date(invoice.paid_at).toLocaleDateString("en-GB")}`}
-                .
+                {invoice.paid_at && ` on ${day(invoice.paid_at)}`}.
               </p>
             ) : invoice.status === "issued" ? (
-              <div className="invoice-pay">
-                <label className="field-label">
-                  Payment method
-                  <select value={method} onChange={(e) => setMethod(e.target.value)}>
-                    <option value="card">Card</option>
-                    <option value="numerar">Cash</option>
-                    <option value="transfer">Bank transfer</option>
-                  </select>
-                </label>
-                <button
-                  className="register-button"
-                  type="button"
-                  onClick={handlePay}
-                  disabled={paying}
-                >
-                  {paying ? "Processing..." : `Pay ${money(invoice.total)}`}
-                </button>
-                <p className="muted-text">
-                  This payment is simulated: no card details are asked for or stored.
+              <section className="inv-pay">
+                <div className="inv-pay-row">
+                  <label className="inv-field">
+                    Payment method
+                    <select
+                      className="inv-select"
+                      value={method}
+                      onChange={(e) => setMethod(e.target.value)}
+                    >
+                      <option value="card">Card</option>
+                      <option value="numerar">Cash</option>
+                      <option value="transfer">Bank transfer</option>
+                    </select>
+                  </label>
+                  <button
+                    className="inv-pay-button"
+                    type="button"
+                    onClick={handlePay}
+                    disabled={paying}
+                  >
+                    {paying ? "Processing..." : `Pay ${money(invoice.total)}`}
+                  </button>
+                </div>
+                <p className="inv-note">
+                  Simulated payment: no card details are requested or stored.
                 </p>
-                {payError && <p className="form-error">{payError}</p>}
-              </div>
+                {payError && <p className="inv-error">{payError}</p>}
+              </section>
             ) : null}
-          </section>
+
+            {downloadError && (
+              <p className="inv-error" style={{ padding: "0 26px 20px" }}>
+                {downloadError}
+              </p>
+            )}
+          </article>
         )}
       </main>
     </div>

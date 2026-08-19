@@ -1602,3 +1602,382 @@ body {
   color: var(--muted);
 }
 
+/* ---------- INVOICE PDF DOWNLOAD ---------- */
+.invoice-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--navy);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--navy);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.download-button:hover:not(:disabled) {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.download-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* =====================================================
+   INVOICE PAGE
+   Replaces the old .invoice-* rules further up; those
+   are no longer referenced by FacturaPage.jsx.
+===================================================== */
+
+/* Two classes, so it beats .dashboard-body without !important. */
+.dashboard-body.invoice-body {
+  width: min(94%, 720px);
+}
+
+.inv-back {
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.inv-doc {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  /* Clips the navy band to the rounded corners. */
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(19, 37, 102, 0.08);
+}
+
+/* ---------- header band ---------- */
+
+.inv-band {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 26px;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.inv-eyebrow {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.inv-number {
+  margin: 6px 0 0;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  /* Digits keep the same width, so invoice numbers line up. */
+  font-variant-numeric: tabular-nums;
+}
+
+.inv-band-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.inv-chip {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.inv-chip-issued { background: #fff4e0; color: #a15c00; }
+.inv-chip-paid { background: #e3f7e8; color: #1f7a3d; }
+.inv-chip-cancelled { background: #ffe3e3; color: #a12626; }
+
+.inv-pdf-button {
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.inv-pdf-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--white);
+}
+
+.inv-pdf-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ---------- metadata strip ---------- */
+
+.inv-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  padding: 20px 26px;
+  border-bottom: 1px solid #e6e8ef;
+}
+
+.inv-meta-label {
+  margin: 0 0 5px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.inv-meta-value {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+/* ---------- line items ---------- */
+
+.inv-lines {
+  width: 100%;
+  padding: 6px 26px 0;
+}
+
+.inv-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inv-table th {
+  padding: 14px 0 10px;
+  border-bottom: 1px solid #e6e8ef;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+}
+
+.inv-table td {
+  padding: 13px 0;
+  border-bottom: 1px solid #f0f1f5;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.inv-table th:not(:first-child),
+.inv-table td:not(:first-child) {
+  text-align: right;
+  padding-left: 16px;
+  /* Money reads as a column, not as scattered text. */
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.inv-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.inv-row-included td {
+  color: var(--muted);
+}
+
+.inv-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef0f5;
+  color: var(--muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* ---------- total ---------- */
+
+.inv-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 16px;
+  margin: 0 26px;
+  padding: 18px 0 24px;
+  border-top: 2px solid var(--navy);
+}
+
+.inv-total-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.inv-total-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- payment ---------- */
+
+.inv-pay {
+  padding: 22px 26px;
+  border-top: 1px solid #e6e8ef;
+  background: #fafbfd;
+}
+
+.inv-pay-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.inv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.inv-select {
+  padding: 10px 12px;
+  min-width: 170px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.inv-pay-button {
+  margin-left:auto;
+  padding: 11px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--green);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.inv-pay-button:hover:not(:disabled) {
+  background: var(--green);
+}
+
+.inv-pay-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.inv-note {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.inv-paid {
+  margin: 0;
+  padding: 18px 26px;
+  border-top: 1px solid #e6e8ef;
+  background: #f3faf5;
+  color: #1f7a3d;
+  font-size: 13px;
+}
+
+.inv-error {
+  margin: 14px 0 0;
+  color: var(--error);
+  font-size: 13px;
+}
+
+.inv-doc button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+@media (max-width: 620px) {
+  .inv-band,
+  .inv-meta,
+  .inv-pay {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .inv-band {
+    flex-direction: column;
+  }
+
+  .inv-band-actions {
+    flex-direction: row-reverse;
+    align-items: center;
+    align-self: stretch;
+    justify-content: space-between;
+  }
+
+  .inv-meta {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .inv-lines {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .inv-table td,
+  .inv-table th {
+    font-size: 12px;
+  }
+
+  .inv-total {
+    margin: 0 18px;
+  }
+
+  .inv-pay-row .inv-field,
+  .inv-pay-row .inv-select,
+  .inv-pay-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-pdf-button,
+  .inv-pay-button {
+    transition: none;
+  }
+}
