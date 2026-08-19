@@ -1,30 +1,15 @@
-"""Reservations, invoices and a fake payment step.
-
-A reservation holds one `cazare` (stay) per animal, each with its own room and
-its own package. A package is not a table of its own: it is a `serviciu` row
-with tip = 'pachet', added to the stay as a `cazare_serviciu` line. Whatever
-the package includes is added the same way but priced at 0, so the invoice can
-show it without charging twice.
-
-The invoice is not stored either. It is built on the fly from the reservation,
-its stays and its payments, so it can never fall out of sync.
-"""
-
 import uuid
 from datetime import date
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 
-from app import schemas
+from app import factura_pdf, schemas
 from app.rezervari_utils import count_nights, invoice_number, package_contents, stay_range
 from app.db import run_select, run_select_one, transaction
 from app.routers.auth import get_current_client_id
 
 router = APIRouter(prefix="/rezervari", tags=["rezervari"])
-
-
-# --------------------------------------------------------------- reading
 
 def load_stays(client_id):
     """Every stay of this client, with its room and its package."""
@@ -67,7 +52,7 @@ def load_stays(client_id):
 
 
 def load_reservations(client_id, code=None):
-    """Reservations of this client, newest first, with their stays attached."""
+    #Reservations of this client, newest first, with their stays attached.
     if code:
         reservations = run_select(
             "SELECT id_rezervare, cod, data_inceput, data_final, status, total, created_at "
@@ -102,7 +87,7 @@ def load_reservations(client_id, code=None):
 
 
 def find_reservation(code, client_id):
-    """Raw reservation row, or 404. Used before anything that needs its id."""
+    #Raw reservation row, or 404. Used before anything that needs its id.
     reservation = run_select_one(
         "SELECT id_rezervare, cod, data_inceput, data_final, status, total, created_at "
         "FROM rezervare WHERE cod = ? AND id_client = ?",
@@ -110,21 +95,11 @@ def find_reservation(code, client_id):
         dictionary=True,
     )
     if not reservation:
-        # Same 404 for an unknown code and for someone else's code, so this
-        # cannot be used to guess valid codes.
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Reservation not found.")
     return reservation
 
 
-# --------------------------------------------------------------- booking
-
 def find_free_room(cur, room_type, check_in, check_out):
-    """Pick a free room of this type and hold it until the transaction ends.
-
-    FOR UPDATE is what stops two people from booking the last room at the same
-    time: the second request waits for the first one to finish, then looks
-    again and sees the room is taken.
-    """
     cur.execute(
         "SELECT c.id_camera, c.pret_noapte "
         "FROM camera c "
@@ -144,7 +119,6 @@ def find_free_room(cur, room_type, check_in, check_out):
 
 
 def add_included_services(cur, stay_id, package, nights):
-    """Write what the package includes as extra lines priced at 0."""
     for item in package_contents(package["continut"]):
         name = item.get("denumire")
         per_night = item.get("cantitate_pe_noapte", 1)
@@ -158,9 +132,6 @@ def add_included_services(cur, stay_id, package, nights):
         )
         service = cur.fetchone()
         if not service:
-            # The names in `continut` are plain text, not foreign keys, so a
-            # typo in the catalog shows up here. Better to fail than to hand
-            # the client an invoice that promises less than they paid for.
             raise HTTPException(
                 status.HTTP_500_INTERNAL_SERVER_ERROR,
                 f"Package '{package['denumire']}' lists an unknown service: {name}",
@@ -207,7 +178,7 @@ def create_reservation(
         total = Decimal("0.00")
 
         for stay in data.stays:
-            # 1. The animal must belong to whoever is asking.
+            #  The animal must belong to whoever is asking.
             cur.execute(
                 "SELECT nume, specie, rasa "
                 "FROM animal "
@@ -215,13 +186,12 @@ def create_reservation(
                 (stay.animal_id, client_id),
             )
             animal = cur.fetchone()
-            
+
             if not animal:
                 raise HTTPException(
                     status.HTTP_404_NOT_FOUND, "One of the selected animals was not found."
                 )
 
-            # 2. The package must be a real, active package.
             cur.execute(
                 "SELECT id_serviciu, denumire, continut, pret_curent FROM serviciu "
                 "WHERE id_serviciu = ? AND tip = 'pachet' AND activ = TRUE",
@@ -234,7 +204,7 @@ def create_reservation(
                     f"The package chosen for {animal['nume']} is not available.",
                 )
 
-            # 3. The animal cannot already be staying over the same dates.
+            # The animal cannot already be staying over the same dates.
             cur.execute(
                 "SELECT 1 FROM cazare z "
                 "JOIN rezervare r ON r.id_rezervare = z.id_rezervare "
@@ -250,8 +220,6 @@ def create_reservation(
                     f"{animal['nume']} already has a stay over these dates.",
                 )
 
-            # 4. Give it a room. The client picks the type, the server picks
-            #    which room, so room ids never leave the backend.
             room = find_free_room(cur, stay.room_type, check_in, check_out)
             if not room:
                 raise HTTPException(
@@ -278,14 +246,12 @@ def create_reservation(
             )
             stay_id = cur.lastrowid
 
-            # 5. The package itself: one unit per night, at today's price.
             cur.execute(
                 "INSERT INTO cazare_serviciu (cantitate, pret_aplicat, id_cazare, id_serviciu) "
                 "VALUES (?, ?, ?, ?)",
                 (nights, package["pret_curent"], stay_id, package["id_serviciu"]),
             )
 
-            # 6. Then everything it includes, at price 0.
             add_included_services(cur, stay_id, package, nights)
 
             total += (room["pret_noapte"] + package["pret_curent"]) * nights
@@ -309,8 +275,6 @@ def get_reservation(code: str, client_id: int = Depends(get_current_client_id)):
     return load_reservations(client_id, code)[0]
 
 
-# --------------------------------------------------------------- invoice
-
 @router.get("/{code}/factura", response_model=schemas.InvoicePublic)
 def get_invoice(code: str, client_id: int = Depends(get_current_client_id)):
     reservation = find_reservation(code, client_id)
@@ -327,8 +291,6 @@ def get_invoice(code: str, client_id: int = Depends(get_current_client_id)):
         s for s in load_stays(client_id) if s["id_rezervare"] == reservation_id
     ]
 
-    # Everything except the package line, which we build from the stay itself.
-    # Included services (price 0) come first, paid extras after.
     services = run_select(
         "SELECT cs.id_cazare, s.denumire, cs.cantitate, cs.pret_aplicat "
         "FROM cazare_serviciu cs "
@@ -340,7 +302,6 @@ def get_invoice(code: str, client_id: int = Depends(get_current_client_id)):
         dictionary=True,
     )
 
-    # One block of lines per animal: room, package, what it includes, extras.
     lines = []
     for stay in stays:
         lines.append(
@@ -405,7 +366,18 @@ def get_invoice(code: str, client_id: int = Depends(get_current_client_id)):
     }
 
 
-# --------------------------------------------------------------- payment
+
+@router.get("/{code}/factura/pdf")
+def get_invoice_pdf(code: str, client_id: int = Depends(get_current_client_id)):
+    invoice = get_invoice(code, client_id)
+    pdf = factura_pdf.generate_pdf(invoice)
+    filename = f"Invoice_{invoice['number']}.pdf"
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
 
 @router.post("/{code}/plata", response_model=schemas.InvoicePublic)
 def pay_reservation(
@@ -413,12 +385,6 @@ def pay_reservation(
     data: schemas.NewPayment,
     client_id: int = Depends(get_current_client_id),
 ):
-    """Fake payment.
-
-    There is no payment provider behind this. It writes a `plata` row and the
-    invoice then reads as paid. No card details are asked for, sent or stored
-    anywhere - doing that for real needs a payment provider.
-    """
     reservation = find_reservation(code, client_id)
     if reservation["status"] == "anulata":
         raise HTTPException(status.HTTP_409_CONFLICT, "This reservation is cancelled.")
@@ -426,8 +392,6 @@ def pay_reservation(
         raise HTTPException(status.HTTP_409_CONFLICT, "This reservation has no amount due.")
 
     with transaction(dictionary=True) as cur:
-        # Lock the reservation first, so two quick clicks cannot both get past
-        # the "already paid" check below.
         cur.execute(
             "SELECT total FROM rezervare WHERE id_rezervare = ? FOR UPDATE",
             (reservation["id_rezervare"],),
@@ -444,7 +408,6 @@ def pay_reservation(
             "VALUES (?, ?, 'confirmata', ?)",
             (reservation["total"], data.method, reservation["id_rezervare"]),
         )
-        # Paying confirms the booking, so staff does not have to accept it.
         cur.execute(
             "UPDATE rezervare SET status = 'confirmata' "
             "WHERE id_rezervare = ? AND status = 'ceruta'",

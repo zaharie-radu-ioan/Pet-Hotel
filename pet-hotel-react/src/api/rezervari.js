@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiDownload, apiFetch } from "./client";
 
 // payload: { start_date, end_date, stays: [{ animal_id, room_type, package_id }] }
 export function createReservation(payload) {
@@ -18,6 +18,12 @@ export function getReservation(code) {
 
 export function getInvoice(code) {
   return apiFetch(`/rezervari/${code}/factura`);
+}
+
+export function downloadInvoicePdf(code) {
+  return apiDownload(`/rezervari/${code}/factura/pdf`, {
+    headers: { Accept: "application/pdf" },
+  });
 }
 
 export function payReservation(code, method) {
