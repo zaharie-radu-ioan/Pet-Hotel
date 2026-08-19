@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
 
 export default function AccountMenu({ variant = "light" }) {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
@@ -65,31 +65,69 @@ export default function AccountMenu({ variant = "light" }) {
 
       {open && (
         <div className="account-dropdown" role="menu">
-          <Link
-            to="/cont"
-            role="menuitem"
-            className="account-item"
-            onClick={() => setOpen(false)}
-          >
-            My account
-          </Link>
-          <Link
-            to="/rezervari"
-            role="menuitem"
-            className="account-item"
-            onClick={() => setOpen(false)}
-          >
-            My bookings
-          </Link>
-          <Link
-            to="/animale"
-            role="menuitem"
-            className="account-item"
-            onClick={() => setOpen(false)}
-          >
-            My pets
-          </Link>
-          <div className="account-sep" />
+          {user?.rol === "admin" && (
+            <>
+              <Link
+                to="/admin"
+                role="menuitem"
+                className="account-item"
+                onClick={() => setOpen(false)}
+              >
+                Dashboard
+              </Link>
+
+              <div className="account-sep" />
+            </>
+          )}
+
+          {user?.rol === "angajat" && (
+            <>
+              <Link
+                to="/dashboard"
+                role="menuitem"
+                className="account-item"
+                onClick={() => setOpen(false)}
+              >
+                Dashboard
+              </Link>
+
+              <div className="account-sep" />
+            </>
+          )}
+
+          {user?.rol === "client" && (
+            <>
+              <Link
+                to="/cont"
+                role="menuitem"
+                className="account-item"
+                onClick={() => setOpen(false)}
+              >
+                My account
+              </Link>
+
+              <Link
+                to="/rezervari"
+                role="menuitem"
+                className="account-item"
+                onClick={() => setOpen(false)}
+              >
+                My bookings
+              </Link>
+
+              <Link
+                to="/animale"
+                role="menuitem"
+                className="account-item"
+                onClick={() => setOpen(false)}
+              >
+                My pets
+              </Link>
+
+              <div className="account-sep" />
+            </>
+          )}
+
           <button
             type="button"
             role="menuitem"
