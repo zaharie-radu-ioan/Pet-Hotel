@@ -1047,23 +1047,40 @@ body {
 
 /* ---------- COMPACT BUTTONS (account actions) ---------- */
 .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   height: 44px;
   padding: 0 24px;
+
   border: 0;
   border-radius: 999px;
+
   background: var(--blue);
   color: #ffffff;
+
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
+
+  text-decoration: none;
   cursor: pointer;
+
   box-shadow: 0 9px 17px rgba(0, 0, 0, 0.16);
-  transition: background 0.15s ease, transform 0.15s ease;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
 }
+
 .btn-primary:hover {
   background: #1023bb;
+  color: #ffffff;
+  text-decoration: none;
   transform: translateY(-1px);
 }
+
 .btn-primary:disabled {
   opacity: 0.6;
   cursor: default;
@@ -2236,6 +2253,21 @@ dashboard-body.booking-body {
 .booking-body a:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
+}
+
+.bk-feeding-times {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(148px, 1fr));
+  gap: 12px;
+  width: 100%;
+} 
+.bk-feeding-times .bk-field {
+  width: 100%;
+} 
+
+.bk-feeding-times input {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 620px) {
