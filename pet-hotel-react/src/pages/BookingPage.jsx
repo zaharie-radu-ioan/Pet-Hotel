@@ -41,7 +41,7 @@ function day(value) {
   });
 }
 
-const EMPTY_STAY = { animal_id: "", room_type: "", package_id: "" };
+const EMPTY_STAY = { animal_id: "", room_type: "", package_id: "", feeding_time_1: "08:00", feeding_time_2: "13:00", feeding_time_3: "19:00" };
 
 export default function BookingPage() {
   const minDate = today();
@@ -165,6 +165,20 @@ export default function BookingPage() {
       if (!stay.animal_id) return "Pick a pet on every row.";
       if (!stay.room_type) return "Pick a room type for every pet.";
       if (!stay.package_id) return "Pick a package for every pet.";
+      
+      const feedingTimes = [
+        stay.feeding_time_1,
+        stay.feeding_time_2,
+        stay.feeding_time_3,
+      ];
+
+      if (feedingTimes.some((time) => !time)) {
+        return "Pick all three feeding times for every pet.";
+      }
+
+      if (new Set(feedingTimes).size !== 3) {
+        return "The three feeding times must be different.";
+      }
     }
 
     const chosenAnimals = stays.map((stay) => stay.animal_id);
@@ -207,6 +221,11 @@ export default function BookingPage() {
           animal_id: Number(stay.animal_id),
           room_type: stay.room_type,
           package_id: Number(stay.package_id),
+          feeding_times: [
+          stay.feeding_time_1,
+          stay.feeding_time_2,
+          stay.feeding_time_3,
+        ],
         })),
       });
 
@@ -334,6 +353,45 @@ export default function BookingPage() {
                     ))}
                   </select>
                 </label>
+
+                <div className="bk-feeding">
+                  <span className="bk-field-label">Feeding times</span>
+
+                  <div className="bk-feeding-times">
+                    <label className="bk-field">
+                      <span className="bk-field-label">Meal 1</span>
+                      <input
+                        type="time"
+                        value={stay.feeding_time_1}
+                        onChange={(e) =>
+                          updateStay(index, "feeding_time_1", e.target.value)
+                        }
+                      />
+                    </label>
+
+                    <label className="bk-field">
+                      <span className="bk-field-label">Meal 2</span>
+                      <input
+                        type="time"
+                        value={stay.feeding_time_2}
+                        onChange={(e) =>
+                          updateStay(index, "feeding_time_2", e.target.value)
+                        }
+                      />
+                    </label>
+
+                    <label className="bk-field">
+                      <span className="bk-field-label">Meal 3</span>
+                      <input
+                        type="time"
+                        value={stay.feeding_time_3}
+                        onChange={(e) =>
+                          updateStay(index, "feeding_time_3", e.target.value
+                        )}
+                      />
+                    </label>
+                  </div>
+                </div>
               </div>
             ))}
 

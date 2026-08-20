@@ -9,6 +9,8 @@ from app.rezervari_utils import count_nights, invoice_number, package_contents, 
 from app.db import run_select, run_select_one, transaction
 from app.routers.auth import get_current_client_id
 
+from app.activitati_utils import generate_activities
+
 router = APIRouter(prefix="/rezervari", tags=["rezervari"])
 
 def load_stays(client_id):
@@ -230,8 +232,9 @@ def create_reservation(
             cur.execute(
                 "INSERT INTO cazare "
                 "(data_check_in, data_check_out, pret_camera_noapte, "
-                " id_rezervare, id_animal, nume_animal, specie_animal, rasa_animal, id_camera) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                " id_rezervare, id_animal, nume_animal, specie_animal, rasa_animal, "
+                " id_camera, ora_hranire_1, ora_hranire_2, ora_hranire_3) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     check_in,
                     check_out,
@@ -242,8 +245,12 @@ def create_reservation(
                     animal["specie"],
                     animal["rasa"],
                     room["id_camera"],
+                    stay.feeding_times[0],
+                    stay.feeding_times[1],
+                    stay.feeding_times[2],
                 ),
             )
+
             stay_id = cur.lastrowid
 
             cur.execute(
@@ -253,6 +260,16 @@ def create_reservation(
             )
 
             add_included_services(cur, stay_id, package, nights)
+
+            generate_activities(
+                            cur,
+                            stay_id=stay_id,
+                            check_in=check_in,
+                            check_out=check_out,
+                            feeding_times=stay.feeding_times,
+                            package=package,
+                        )
+                        
 
             total += (room["pret_noapte"] + package["pret_curent"]) * nights
 
