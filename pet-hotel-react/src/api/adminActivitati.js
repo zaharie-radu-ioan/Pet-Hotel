@@ -27,3 +27,7 @@ export function deleteActivity(idActivitate) {
     method: "DELETE",
   });
 }
+
+export function listAllActivities() {
+  return apiFetch("/activitati/admin");
+}

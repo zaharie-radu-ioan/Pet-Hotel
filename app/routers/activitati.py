@@ -506,37 +506,88 @@ def update_activity(
         "status": data.status,
     }
 
-@router.delete("/admin/{id_activitate}")
-def delete_activity(
-    id_activitate: int,
+
+@router.get("/admin")
+def get_all_activities(
     current_user=Depends(get_current_admin),
 ):
-    activity = run_select_one(
+    rows = run_select(
         """
-        SELECT id_activitate
-        FROM activitate
-        WHERE id_activitate = ?
+        SELECT
+            a.id_activitate,
+            a.tip_activitate,
+            a.ora_inceput,
+            a.ora_final,
+            a.status,
+            a.observatii,
+            a.id_cazare,
+
+            ang.id_angajat,
+            ang.nume AS angajat_nume,
+            ang.prenume AS angajat_prenume,
+
+            an.id_animal,
+            an.nume AS animal_nume,
+
+            c.id_camera,
+            c.tip_camera
+
+        FROM activitate a
+
+        LEFT JOIN angajat ang
+            ON a.id_angajat = ang.id_angajat
+
+        LEFT JOIN cazare cz
+            ON a.id_cazare = cz.id_cazare
+
+        LEFT JOIN animal an
+            ON cz.id_animal = an.id_animal
+
+        LEFT JOIN camera c
+            ON cz.id_camera = c.id_camera
+
+        ORDER BY a.ora_inceput ASC
         """,
-        (id_activitate,),
         dictionary=True,
     )
 
-    if not activity:
-        raise HTTPException(
-            status_code=404,
-            detail="Activitatea nu exista.",
-        )
+    return [
+        {
+            "id_activitate": row["id_activitate"],
+            "tip_activitate": row["tip_activitate"],
+            "ora_inceput": row["ora_inceput"],
+            "ora_final": row["ora_final"],
+            "status": row["status"],
+            "observatii": row["observatii"],
+            "id_cazare": row["id_cazare"],
 
-    run_execute(
-        """
-        DELETE FROM activitate
-        WHERE id_activitate = ?
-        """,
-        (id_activitate,),
-    )
+            "angajat": (
+                {
+                    "id_angajat": row["id_angajat"],
+                    "nume": row["angajat_nume"],
+                    "prenume": row["angajat_prenume"],
+                }
+                if row["id_angajat"] is not None
+                else None
+            ),
 
-    return {
-        "message": "Activitatea a fost stearsa.",
-        "id_activitate": id_activitate,
-    }
+            "animal": (
+                {
+                    "id_animal": row["id_animal"],
+                    "nume": row["animal_nume"],
+                }
+                if row["id_animal"] is not None
+                else None
+            ),
 
+            "camera": (
+                {
+                    "id_camera": row["id_camera"],
+                    "tip_camera": row["tip_camera"],
+                }
+                if row["id_camera"] is not None
+                else None
+            ),
+        }
+        for row in rows
+    ]
