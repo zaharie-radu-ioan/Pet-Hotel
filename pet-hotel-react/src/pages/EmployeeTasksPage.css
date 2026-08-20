@@ -12,16 +12,47 @@
 }
 
 .employee-tasks-page .back-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  height: 44px;
+  padding: 0 20px;
+
   margin-bottom: 14px;
 
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
+  border: 0;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: var(--green);
+
   text-decoration: none;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  box-shadow: 0 9px 17px rgba(0, 0, 0, 0.16);
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .employee-tasks-page .back-link:hover {
-  color: #ffffff;
+  background: #f1f1f1;
+  color: var(--green);
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 11px 20px rgba(0, 0, 0, 0.18);
+}
+
+.employee-tasks-page .back-link:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.14);
 }
 
 .employee-tasks-page .muted-text {
