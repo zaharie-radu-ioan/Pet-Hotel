@@ -354,7 +354,7 @@ export default function BookingPage() {
                   </select>
                 </label>
 
-                <div className="bk-feeding">
+                <div className="bk-feeding ">
                   <span className="bk-field-label">Feeding times</span>
 
                   <div className="bk-feeding-times">

@@ -101,7 +101,7 @@ export default function FacturaPage() {
     <div className="dashboard">
       <AppHeader />
       <main className="dashboard-body invoice-body">
-        <Link className="link-button inv-back" to="/rezervari">
+        <Link className="btn-primary" to="/rezervari">
           &larr; Back to bookings
         </Link>
 

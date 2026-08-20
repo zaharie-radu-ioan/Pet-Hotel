@@ -31,7 +31,7 @@ def generate_activities(
                     "(tip_activitate, ora_inceput, id_cazare) "
                     "VALUES (?, ?, ?)",
                     (
-                        "hranire",
+                        "Feeding",
                         activity_start,
                         stay_id,
                     ),
