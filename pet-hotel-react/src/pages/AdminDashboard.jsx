@@ -64,6 +64,33 @@ export default function AdminDashboard() {
           </div>
         </section>
 
+        {/* ACTIVITY MANAGEMENT */}
+
+        <section className="bi-section">
+          <div className="bi-card">
+            <div className="bi-card-content">
+              <span className="bi-label">
+                ACTIVITY MANAGEMENT
+              </span>
+
+              <h1>
+                Hotel Activities
+              </h1>
+
+              <p>
+                View all hotel activities, assign tasks
+                to employees and manage their status.
+              </p>
+            </div>
+
+            <Link
+              to="/admin/activities"
+              className="bi-card-button"
+            >
+              Manage Activities
+            </Link>
+          </div>
+        </section>
         {/* EMPLOYEES */}
 
         <section className="employees-section">

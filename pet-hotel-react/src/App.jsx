@@ -14,6 +14,7 @@ import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import EmployeeTasksPage from "./pages/EmployeeTasksPage";
 import BusinessIntelligence from "./pages/BusinessIntelligence";
+import AdminActivities from "./pages/AdminActivities";
 
 import { AuthContext } from "./auth/AuthContext";
 
@@ -118,6 +119,10 @@ export default function App() {
             </RoleRoute>
             </ProtectedRoute>
         }
+      />
+      <Route
+        path="/admin/activities"
+        element={<AdminActivities />}
       />
     </Routes>
   );
