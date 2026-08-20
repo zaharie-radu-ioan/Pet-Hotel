@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from typing import Literal
 
@@ -53,7 +53,11 @@ class NewStay(BaseModel):
     animal_id: int
     room_type: str = Field(min_length=1, max_length=50)
     package_id: int
-
+    feeding_times: list[time] = Field(
+        default=[time(8, 0), time(13, 0), time(19, 0)],
+        min_length=3,
+        max_length=3,
+    )
 
 class NewReservation(BaseModel):
     start_date: date
@@ -67,6 +71,7 @@ class StayPublic(BaseModel):
     package: str | None = None
     room_price_per_night: Decimal
     package_price_per_night: Decimal = Decimal("0.00")
+    feeding_times: list[time]
 
 
 class ReservationPublic(BaseModel):

@@ -1,11 +1,11 @@
 import uuid
-from datetime import date
+from datetime import date, datetime, time
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 
 from app import factura_pdf, schemas
-from app.rezervari_utils import count_nights, invoice_number, package_contents, stay_range
+from app.rezervari_utils import count_nights, invoice_number, package_contents, stay_range, stay_days, activity_time_for, timedelta_to_time
 from app.db import run_select, run_select_one, transaction
 from app.routers.auth import get_current_client_id
 
@@ -16,6 +16,7 @@ def load_stays(client_id):
     stays = run_select(
         "SELECT z.id_cazare, z.id_rezervare, "
         "       z.nume_animal AS animal, "
+        "       z.ora_hranire_1, z.ora_hranire_2, z.ora_hranire_3, "
         "       c.tip_camera AS room_type, "
         "       z.pret_camera_noapte AS room_price_per_night "
         "FROM cazare z "
@@ -43,6 +44,11 @@ def load_stays(client_id):
     package_by_stay = {p["id_cazare"]: p for p in packages}
 
     for stay in stays:
+        stay["feeding_times"] = [
+            timedelta_to_time(stay.pop("ora_hranire_1")),
+            timedelta_to_time(stay.pop("ora_hranire_2")),
+            timedelta_to_time(stay.pop("ora_hranire_3")),
+        ]
         package = package_by_stay.get(stay["id_cazare"])
         stay["package"] = package["package"] if package else None
         stay["package_price_per_night"] = (
@@ -143,6 +149,30 @@ def add_included_services(cur, stay_id, package, nights):
             (per_night * nights, stay_id, service["id_serviciu"]),
         )
 
+def generate_activities(cur, stay_id, package, start_date, end_date, feeding_times):
+    days = stay_days(start_date, end_date)
+
+    # 3 hrăniri pe zi, la orele alese de client — indiferent de pachet.
+    for day in days:
+        for feeding_time in feeding_times:
+            cur.execute(
+                "INSERT INTO activitate (tip_activitate, ora_inceput, status, id_cazare) "
+                "VALUES ('Feeding', ?, 'planificata', ?)",
+                (datetime.combine(day, feeding_time), stay_id),
+            )
+
+    for item in package_contents(package["continut"]):
+        name = item.get("denumire")
+        per_day = item.get("cantitate_pe_noapte", 1)
+        if not name:
+            continue
+        for day in days:
+            for occurrence in range(per_day):
+                cur.execute(
+                    "INSERT INTO activitate (tip_activitate, ora_inceput, status, id_cazare) "
+                    "VALUES (?, ?, 'planificata', ?)",
+                    (name, datetime.combine(day, activity_time_for(name, occurrence)), stay_id),
+                )
 
 @router.post("", response_model=schemas.ReservationPublic, status_code=status.HTTP_201_CREATED)
 def create_reservation(
@@ -230,18 +260,14 @@ def create_reservation(
             cur.execute(
                 "INSERT INTO cazare "
                 "(data_check_in, data_check_out, pret_camera_noapte, "
-                " id_rezervare, id_animal, nume_animal, specie_animal, rasa_animal, id_camera) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                " id_rezervare, id_animal, nume_animal, specie_animal, rasa_animal, id_camera, "
+                " ora_hranire_1, ora_hranire_2, ora_hranire_3) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
-                    check_in,
-                    check_out,
-                    room["pret_noapte"],
-                    reservation_id,
-                    stay.animal_id,
-                    animal["nume"],
-                    animal["specie"],
-                    animal["rasa"],
+                    check_in, check_out, room["pret_noapte"], reservation_id,
+                    stay.animal_id, animal["nume"], animal["specie"], animal["rasa"],
                     room["id_camera"],
+                    *stay.feeding_times,
                 ),
             )
             stay_id = cur.lastrowid

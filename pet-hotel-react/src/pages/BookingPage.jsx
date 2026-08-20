@@ -13,6 +13,12 @@ const STATUS_LABELS = {
   finalizata: "Completed",
   anulata: "Cancelled",
 };
+const EMPTY_STAY = {
+  animal_id: "",
+  room_type: "",
+  package_id: "",
+  feeding_times: ["08:00", "13:00", "19:00"],
+};
 
 function today() {
   const now = new Date();
@@ -41,7 +47,16 @@ function day(value) {
   });
 }
 
-const EMPTY_STAY = { animal_id: "", room_type: "", package_id: "" };
+function updateFeedingTime(index, mealIndex, value) {
+  setStays((current) =>
+    current.map((stay, i) => {
+      if (i !== index) return stay;
+      const times = [...stay.feeding_times];
+      times[mealIndex] = value;
+      return { ...stay, feeding_times: times };
+    })
+  );
+}
 
 export default function BookingPage() {
   const minDate = today();
@@ -207,6 +222,7 @@ export default function BookingPage() {
           animal_id: Number(stay.animal_id),
           room_type: stay.room_type,
           package_id: Number(stay.package_id),
+          feeding_times: stay.feeding_times,
         })),
       });
 
@@ -334,7 +350,25 @@ export default function BookingPage() {
                     ))}
                   </select>
                 </label>
+
+                <div className="bk-field">
+                  <span className="bk-field-label">Feeding times</span>
+                  <div className="bk-feeding-times">
+                    {["Breakfast", "Lunch", "Dinner"].map((label, mealIndex) => (
+                      <label key={label} className="bk-feeding-slot">
+                        <span>{label}</span>
+                        <input
+                          type="time"
+                          value={stay.feeding_times[mealIndex]}
+                          onChange={(e) => updateFeedingTime(index, mealIndex, e.target.value)}
+                        />
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
+
+              
             ))}
 
             {packageSummary(stays, packages)}
