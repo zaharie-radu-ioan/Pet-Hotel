@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS utilizator (
     parola VARCHAR(255) NOT NULL,
     rol ENUM('admin', 'angajat', 'client') NOT NULL DEFAULT 'client',
     activ BOOLEAN DEFAULT TRUE,
+    ultima_notificare_vazuta DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
