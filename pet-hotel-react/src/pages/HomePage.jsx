@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
 import AccountMenu from "../components/AccountMenu";
+import NotificationBell from "../components/NotificationBell";
 import "./HomePage.css";
 
 const FEATURES = [
@@ -50,11 +51,14 @@ export default function HomePage() {
           <span className="home-brand-mark" aria-hidden="true">{"\u{1F43E}"}</span>
           Pet Hotel
         </Link>
-        <nav className="home-nav-links">
+                <nav className="home-nav-links">
           <a href="/dashboard">Dashboard</a>
           <a href="#location">Contact</a>
           {user ? (
-            <AccountMenu variant="dark" />
+            <>
+              <NotificationBell variant="dark" />
+              <AccountMenu variant="dark" />
+            </>
           ) : (
             <>
               <Link to="/signup">Sign up</Link>
