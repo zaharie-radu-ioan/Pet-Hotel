@@ -408,16 +408,29 @@ body {
 
 .right-panel {
   position: relative;
-
   min-height: 100vh;
-
   overflow: hidden;
-
-  background:
-    var(--green);
+  background: var(--green);
 }
 
+.split-dog-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  z-index: 0;
+}
 
+.right-panel .phone {
+  z-index: 2;
+}
+
+.right-panel .hero-content {
+  z-index: 2;
+}
 /* =====================================================
    PHONE NUMBER
 ===================================================== */
@@ -445,15 +458,11 @@ body {
 
 .hero-content {
   position: absolute;
-
-  width:
-    min(72%, 570px);
-
+  width: min(72%, 570px);
   left: 50%;
-  top: 50%;
-
-  transform:
-    translate(-50%, -40%);
+  top: 92%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
 }
 
 
