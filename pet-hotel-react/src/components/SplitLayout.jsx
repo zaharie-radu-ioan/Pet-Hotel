@@ -9,14 +9,20 @@ export default function SplitLayout({ children, heroTitle, heroSubtitle }) {
         <div className="form-container">{children}</div>
       </section>
 
-      <section className="right-panel">
-        <a className="phone" href="tel:+407XXXXXXXX">
+        <section className="right-panel">
+        <img
+          className="split-dog-image"
+          src="/design.png"
+          alt="Happy dog outdoors"
+        />
+
+        {/* <a className="phone" href="tel:+407XXXXXXXX">
           &#9742;&nbsp;+40 7xx xxx xxx
-        </a>
+        </a> */}
+
         <div className="hero-content">
-          <img className="dog-image" src="/dog-illustration.png" alt="Happy dog outdoors" />
-          <h2>{heroTitle}</h2>
-          <p>{heroSubtitle}</p>
+        <h2>{heroTitle}</h2>
+        <p>{heroSubtitle}</p> 
         </div>
       </section>
     </main>
