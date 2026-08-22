@@ -24,8 +24,8 @@ def get_my_activities(
             a.status,
             a.observatii,
 
-            an.id_animal,
-            an.nume AS animal_nume,
+            cz.id_animal,
+            cz.nume_animal AS animal_nume,
 
             c.id_camera,
             c.tip_camera
@@ -41,8 +41,6 @@ def get_my_activities(
         LEFT JOIN cazare cz
             ON a.id_cazare = cz.id_cazare
 
-        LEFT JOIN animal an
-            ON cz.id_animal = an.id_animal
 
         LEFT JOIN camera c
             ON cz.id_camera = c.id_camera
@@ -71,7 +69,7 @@ def get_my_activities(
                     "id_animal": row["id_animal"],
                     "nume": row["animal_nume"],
                 }
-                if row["id_animal"] is not None
+                if row["animal_nume"] is not None
                 else None
             ),
             "camera": (
@@ -309,15 +307,13 @@ def get_activities_for_employee(
             a.status,
             a.observatii,
             a.id_cazare,
-            an.id_animal,
-            an.nume AS animal_nume,
+            cz.id_animal,
+            cz.nume_animal AS animal_nume,
             c.id_camera,
             c.tip_camera
         FROM activitate a
         LEFT JOIN cazare cz
             ON a.id_cazare = cz.id_cazare
-        LEFT JOIN animal an
-            ON cz.id_animal = an.id_animal
         LEFT JOIN camera c
             ON cz.id_camera = c.id_camera
         WHERE a.id_angajat = ?
@@ -348,7 +344,7 @@ def get_activities_for_employee(
                         "id_animal": row["id_animal"],
                         "nume": row["animal_nume"],
                     }
-                    if row["id_animal"] is not None
+                    if row["animal_nume"] is not None
                     else None
                 ),
                 "camera": (
@@ -526,8 +522,8 @@ def get_all_activities(
             ang.nume AS angajat_nume,
             ang.prenume AS angajat_prenume,
 
-            an.id_animal,
-            an.nume AS animal_nume,
+            cz.id_animal,
+            cz.nume_animal AS animal_nume,
 
             c.id_camera,
             c.tip_camera
@@ -539,9 +535,6 @@ def get_all_activities(
 
         LEFT JOIN cazare cz
             ON a.id_cazare = cz.id_cazare
-
-        LEFT JOIN animal an
-            ON cz.id_animal = an.id_animal
 
         LEFT JOIN camera c
             ON cz.id_camera = c.id_camera
@@ -576,7 +569,7 @@ def get_all_activities(
                     "id_animal": row["id_animal"],
                     "nume": row["animal_nume"],
                 }
-                if row["id_animal"] is not None
+                if row["animal_nume"] is not None
                 else None
             ),
 

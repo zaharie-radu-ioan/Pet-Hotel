@@ -130,7 +130,7 @@ class ProfilUpdate(BaseModel):
 # -------------------------------------------------------------- activitati
 
 class ActivitateAnimalResponse(BaseModel):
-    id_animal: int
+    id_animal: int | None
     nume: str
 
 
