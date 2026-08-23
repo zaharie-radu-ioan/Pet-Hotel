@@ -12,8 +12,8 @@ export default function ServicesChart({ data }) {
     return (
         <div className="bi-chart-card">
             <div className="bi-chart-header">
-                <h2>Servicii populare</h2>
-                <p>Serviciile cu cele mai multe utilizări</p>
+                <h2>Popular services</h2>
+                <p>Services with the most bookings</p>
             </div>
 
             <ResponsiveContainer width="100%" height={350}>
@@ -33,7 +33,7 @@ export default function ServicesChart({ data }) {
 
                     <Bar
                         dataKey="bookings"
-                        name="Utilizări"
+                        name="Bookings"
                         fill="#315d32"
                     />
                 </BarChart>
