@@ -18,8 +18,8 @@ export default function PaymentsChart({ data }) {
     return (
         <div className="bi-chart-card">
             <div className="bi-chart-header">
-                <h2>Metode de plată</h2>
-                <p>Distribuția plăților confirmate</p>
+                <h2>Payment Methods</h2>
+                <p>Distribution of confirmed payments</p>
             </div>
 
             <ResponsiveContainer width="100%" height={350}>

@@ -12,8 +12,8 @@ export default function ReservationsChart({ data }) {
     return (
         <div className="bi-chart-card">
             <div className="bi-chart-header">
-                <h2>Evoluția rezervărilor</h2>
-                <p>Numărul de rezervări și veniturile lunare</p>
+                <h2>Reservation Trends</h2>
+                <p>Number of reservations and monthly revenue</p>
             </div>
 
             <ResponsiveContainer width="100%" height={350}>
@@ -29,7 +29,7 @@ export default function ReservationsChart({ data }) {
                     <Line
                         type="monotone"
                         dataKey="reservations"
-                        name="Rezervări"
+                        name="Reservations"
                         stroke="#315d32"
                         strokeWidth={3}
                     />
@@ -37,7 +37,7 @@ export default function ReservationsChart({ data }) {
                     <Line
                         type="monotone"
                         dataKey="revenue"
-                        name="Venit"
+                        name="Income"
                         stroke="#172bd0"
                         strokeWidth={3}
                     />
