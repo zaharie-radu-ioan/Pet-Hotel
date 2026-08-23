@@ -27,10 +27,9 @@ const FEATURES = [
     title: "Premium stay",
     subtitle: "Because your pet deserves the best.",
     points: ["Luxury private suite",
-      "4 outdoor walks per day",
+      "3 outdoor walks per day",
       "Private playtime",
-      "One spa session",
-      "Personalized rest schedule",
+      "One gourmet meal per day",
       "Dedicated one-on-one care",],
   },
 ];
